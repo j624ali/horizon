@@ -14,10 +14,23 @@
     "header_announcements_9jGBFp": {
       "type": "header-announcements",
       "blocks": {
-        "announcement_BxgCk9": {
+        "announcement_nnc": {
           "type": "_announcement",
           "settings": {
-            "text": "Welcome to our store",
+            "text": "All prices for NNC products include subsidies & shipping. $95 minimum order.",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.75rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
+        "announcement_delivery": {
+          "type": "_announcement",
+          "settings": {
+            "text": "Delivering to 15 Nunavut communities",
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.75rem",
@@ -29,13 +42,14 @@
         }
       },
       "block_order": [
-        "announcement_BxgCk9"
+        "announcement_nnc",
+        "announcement_delivery"
       ],
       "name": "t:names.announcement_bar",
       "settings": {
         "speed": 5,
         "section_width": "page-width",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-3",
         "divider_width": 1,
         "padding-block-start": 15,
         "padding-block-end": 15
@@ -60,21 +74,21 @@
           "type": "_header-menu",
           "static": true,
           "settings": {
-            "menu": "main-menu",
+            "menu": "all-departments-new-site",
             "color_scheme": "",
             "type_font_primary_size": "0.875rem",
             "menu_font_style": "inverse",
-            "type_font_primary_link": "body",
+            "type_font_primary_link": "subheading",
             "type_case_primary_link": "none",
-            "menu_style": "featured_products",
+            "menu_style": "collection_images",
             "featured_products_aspect_ratio": "4 / 5",
             "featured_collections_aspect_ratio": "16 / 9",
-            "image_border_radius": 0,
-            "navigation_bar": false,
-            "color_scheme_navigation_bar": "",
-            "drawer_accordion": false,
-            "drawer_accordion_expand_first": false,
-            "drawer_dividers": false
+            "image_border_radius": 4,
+            "navigation_bar": true,
+            "color_scheme_navigation_bar": "scheme-2",
+            "drawer_accordion": true,
+            "drawer_accordion_expand_first": true,
+            "drawer_dividers": true
           },
           "blocks": {}
         }
@@ -82,13 +96,13 @@
       "settings": {
         "logo_position": "left",
         "menu_position": "left",
-        "menu_row": "top",
+        "menu_row": "bottom",
         "show_search": true,
         "search_position": "right",
         "search_row": "top",
-        "show_country": true,
+        "show_country": false,
         "country_selector_style": false,
-        "show_language": true,
+        "show_language": false,
         "localization_font": "heading",
         "localization_font_size": "0.875rem",
         "localization_position": "right",
@@ -96,11 +110,11 @@
         "section_width": "page-width",
         "section_height": "standard",
         "enable_sticky_header": "always",
-        "divider_width": 0,
+        "divider_width": 1,
         "divider_size": "page-width",
         "border_width": 0,
         "color_scheme_top": "scheme-1",
-        "color_scheme_bottom": "",
+        "color_scheme_bottom": "scheme-2",
         "color_scheme_transparent": "scheme-6",
         "enable_transparent_header_home": false,
         "home_color_scheme": "inverse",
