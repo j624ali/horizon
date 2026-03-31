@@ -139,6 +139,15 @@ shopify theme console                        # Liquid REPL for testing expressio
 shopify theme profile                        # Profile Liquid rendering performance
 ```
 
+## External Tools
+
+```bash
+# Internet search (Perplexity sonar-pro-search via CLI)
+deep-search "your query here"              # Use when Shopify docs or local context aren't enough
+```
+
+Use `deep-search` when you need up-to-date information that isn't in the codebase or Shopify docs — e.g., Horizon-specific behavior, Liquid edge cases, NNC program details, or community-specific context. It queries Perplexity's sonar-pro-search model and returns results directly in the terminal.
+
 ## Shopify Documentation
 
 Append `.md` to any Shopify docs URL for clean markdown. Key starting points:
