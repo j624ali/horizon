@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Department Grid Options — Arctic Fresh</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      line-height: 1.5;
+    }
+
+    .page-header {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 24px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .page-header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .page-header p {
+      font-size: 0.875rem;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid #e0e0e0;
+      background: #fff;
+      padding: 0 32px;
+      position: sticky;
+      top: 73px;
+      z-index: 99;
+    }
+
+    .tab-btn {
+      padding: 14px 24px;
+      border: none;
+      background: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .tab-btn:hover { color: #1a1a1a; }
+    .tab-btn.active { color: #1a1a1a; border-bottom-color: #1a1a1a; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ========================================
+       SHARED SECTION STYLES
+       ======================================== */
+    .demo-section {
+      max-width: 1200px;
+      margin: 48px auto;
+      padding: 0 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .section-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .section-header a {
+      font-size: 0.875rem;
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .section-header a:hover { color: #1a1a1a; }
+
+    .option-label {
+      text-align: center;
+      padding: 16px 24px;
+      background: #fff3cd;
+      border-radius: 8px;
+      margin-bottom: 32px;
+      font-size: 0.875rem;
+      color: #856404;
+      font-weight: 500;
+    }
+
+    /* ========================================
+       OPTION 1: COLLECTION LIST GRID
+       ======================================== */
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+    }
+
+    .collection-card {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.2s ease;
+    }
+
+    .collection-card:hover { transform: translateY(-4px); }
+
+    .collection-card__image {
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #e8e8e8;
+      margin-bottom: 10px;
+    }
+
+    .collection-card__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .collection-card:hover .collection-card__image img {
+      transform: scale(1.05);
+    }
+
+    .collection-card__title {
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .collection-card__title svg {
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .collection-card:hover .collection-card__title svg {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ========================================
+       OPTION 2: COLLECTION SLIDER
+       ======================================== */
+    .slider-wrapper {
+      position: relative;
+    }
+
+    .slider-track {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+
+    .slider-track::-webkit-scrollbar { display: none; }
+
+    .slider-slide {
+      flex: 0 0 160px;
+      scroll-snap-align: start;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s ease;
+    }
+
+    .slider-slide:hover { transform: translateY(-4px); }
+
+    .slider-slide__image {
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #e8e8e8;
+      margin-bottom: 8px;
+    }
+
+    .slider-slide__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .slider-slide:hover .slider-slide__image img {
+      transform: scale(1.05);
+    }
+
+    .slider-slide__title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .slider-arrow {
+      position: absolute;
+      top: calc(50% - 20px);
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: box-shadow 0.2s, background 0.2s;
+    }
+
+    .slider-arrow:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      background: #fafafa;
+    }
+
+    .slider-arrow--prev { left: -20px; }
+    .slider-arrow--next { right: -20px; }
+
+    /* ========================================
+       OPTION 3: COLLECTION CARDS (RICH)
+       ======================================== */
+    .rich-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .rich-card {
+      text-decoration: none;
+      color: inherit;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e8e8e8;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .rich-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    .rich-card__main-image {
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: #e8e8e8;
+    }
+
+    .rich-card__main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .rich-card:hover .rich-card__main-image img {
+      transform: scale(1.05);
+    }
+
+    .rich-card__thumbs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 4px;
+    }
+
+    .rich-card__thumb {
+      aspect-ratio: 1 / 1;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .rich-card__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .rich-card__info {
+      padding: 12px 16px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .rich-card__name {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .rich-card__count {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .rich-card__btn {
+      padding: 8px 16px;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .rich-card__btn:hover { background: #333; }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 1024px) {
+      .collection-grid { grid-template-columns: repeat(4, 1fr); }
+      .rich-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .collection-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .rich-grid { grid-template-columns: repeat(2, 1fr); }
+      .slider-slide { flex: 0 0 130px; }
+      .slider-arrow { display: none; }
+      .tab-btn { padding: 12px 16px; font-size: 0.8rem; }
+    }
+
+    @media (max-width: 480px) {
+      .collection-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .collection-card__title { font-size: 0.75rem; }
+      .rich-grid { grid-template-columns: 1fr; }
+      .slider-slide { flex: 0 0 110px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <h1>Arctic Fresh — Department Grid Options</h1>
+    <p>Visual comparison of three layout patterns for the "Shop by Department" homepage section</p>
+  </div>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="grid">Option 1: Grid</button>
+    <button class="tab-btn" data-tab="slider">Option 2: Slider</button>
+    <button class="tab-btn" data-tab="rich">Option 3: Rich Cards</button>
+  </nav>
+
+  <!-- OPTION 1: COLLECTION LIST GRID -->
+  <div class="tab-panel active" id="tab-grid">
+    <div class="demo-section">
+      <div class="option-label">Clean grid — 6 columns desktop, 3 mobile. Image + title. Fast to scan, best for 12 departments.</div>
+      <div class="section-header">
+        <h2>Shop by Department</h2>
+        <a href="#">View all &rarr;</a>
+      </div>
+      <div class="collection-grid" id="grid-container"></div>
+    </div>
+  </div>
+
+  <!-- OPTION 2: COLLECTION SLIDER -->
+  <div class="tab-panel" id="tab-slider">
+    <div class="demo-section">
+      <div class="option-label">Horizontal slider — compact vertical space, arrows for navigation. Hides some departments behind scroll.</div>
+      <div class="section-header">
+        <h2>Shop by Department</h2>
+        <a href="#">View all &rarr;</a>
+      </div>
+      <div class="slider-wrapper">
+        <button class="slider-arrow slider-arrow--prev" id="slider-prev">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="slider-track" id="slider-container"></div>
+        <button class="slider-arrow slider-arrow--next" id="slider-next">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION 3: RICH CARDS -->
+  <div class="tab-panel" id="tab-rich">
+    <div class="demo-section">
+      <div class="option-label">Rich cards — main image + 3 product thumbnails + count + Shop button. More engaging, much more vertical space.</div>
+      <div class="section-header">
+        <h2>Shop by Department</h2>
+        <a href="#">View all &rarr;</a>
+      </div>
+      <div class="rich-grid" id="rich-container"></div>
+    </div>
+  </div>
+
+  <script>
+    const departments = [
+      { name: 'Fruits & Vegetables', color: '4a7c59', emoji: '🥬' },
+      { name: 'Meat & Seafood',      color: '8b3a3a', emoji: '🥩' },
+      { name: 'Dairy & Eggs',        color: 'c4a35a', emoji: '🧀' },
+      { name: 'Pantry',              color: '7a6543', emoji: '🥫' },
+      { name: 'Frozen Foods',        color: '4a6fa5', emoji: '🧊' },
+      { name: 'Bakery',              color: 'b87333', emoji: '🍞' },
+      { name: 'Deli & Ready Meals',  color: 'a0522d', emoji: '🥗' },
+      { name: 'Drinks',              color: '2e8b57', emoji: '🥤' },
+      { name: 'Specialty Foods',     color: '8b6914', emoji: '🫒' },
+      { name: 'Health & Beauty',     color: '6a5acd', emoji: '💊' },
+      { name: 'Home & Lifestyle',    color: '5f7d8e', emoji: '🏠' },
+      { name: 'Pets',                color: '7b6d4e', emoji: '🐾' },
+    ];
+
+    function img(w, h, color, text) {
+      return `https://placehold.co/${w}x${h}/${color}/ffffff?text=${encodeURIComponent(text)}`;
+    }
+
+    const arrowSvg = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    // Option 1: Grid
+    const gridHtml = departments.map(d => `
+      <a href="#" class="collection-card">
+        <div class="collection-card__image">
+          <img src="${img(400, 400, d.color, d.emoji)}" alt="${d.name}" loading="lazy">
+        </div>
+        <div class="collection-card__title">${d.name} ${arrowSvg}</div>
+      </a>
+    `).join('');
+    document.getElementById('grid-container').innerHTML = gridHtml;
+
+    // Option 2: Slider
+    const sliderHtml = departments.map(d => `
+      <a href="#" class="slider-slide">
+        <div class="slider-slide__image">
+          <img src="${img(320, 320, d.color, d.emoji)}" alt="${d.name}" loading="lazy">
+        </div>
+        <div class="slider-slide__title">${d.name}</div>
+      </a>
+    `).join('');
+    document.getElementById('slider-container').innerHTML = sliderHtml;
+
+    const track = document.getElementById('slider-container');
+    document.getElementById('slider-prev').addEventListener('click', () => {
+      track.scrollBy({ left: -360, behavior: 'smooth' });
+    });
+    document.getElementById('slider-next').addEventListener('click', () => {
+      track.scrollBy({ left: 360, behavior: 'smooth' });
+    });
+
+    // Option 3: Rich Cards
+    const thumbColors = ['ddd', 'ccc', 'bbb'];
+    const richHtml = departments.map(d => `
+      <a href="#" class="rich-card">
+        <div class="rich-card__main-image">
+          <img src="${img(600, 450, d.color, d.emoji)}" alt="${d.name}" loading="lazy">
+        </div>
+        <div class="rich-card__thumbs">
+          ${thumbColors.map((c, i) => `
+            <div class="rich-card__thumb">
+              <img src="${img(150, 150, c, '📦')}" alt="Product ${i + 1}" loading="lazy">
+            </div>
+          `).join('')}
+        </div>
+        <div class="rich-card__info">
+          <div>
+            <div class="rich-card__name">${d.name}</div>
+            <div class="rich-card__count">${Math.floor(Math.random() * 400 + 100)} items</div>
+          </div>
+          <button class="rich-card__btn">Shop</button>
+        </div>
+      </a>
+    `).join('');
+    document.getElementById('rich-container').innerHTML = richHtml;
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
