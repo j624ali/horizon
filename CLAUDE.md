@@ -195,7 +195,7 @@ NNC is a federal subsidy program that reduces the cost of eligible food and hous
 
 ## Decision Principles
 
-1. **Configuration over code.** Use Horizon's block composition and theme editor settings before writing custom Liquid, CSS, or JS. The `group` block handles most layout needs. Custom sections/blocks are a last resort.
+1. **Code over configuration.** Write custom sections and Liquid rather than composing layouts through JSON template config and theme editor settings. Keep `templates/*.json` files lean — they should reference sections, not contain sprawling block/setting definitions. Hardcode values directly in `.liquid` files where the content is known and stable. Theme editor configurability for the client is not a priority.
 2. **Follow Horizon conventions.** BEM CSS, Component framework for JS, `{% stylesheet %}` for scoped CSS, `{% doc %}` for snippet documentation, `schemas/` for schema sources. The `.cursor/rules/` folder is the style guide.
 3. **App blocks for integration.** Northbound integration should happen through `@app` blocks, not baked-in theme code. This keeps the theme and app independently deployable.
 4. **Mobile-first for grocery.** Many Arctic Fresh customers browse on phones. Every layout decision should consider the mobile experience first — horizontal scrolling for department nav, accordion menus, touch-friendly quick-add targets (44x44px minimum).
