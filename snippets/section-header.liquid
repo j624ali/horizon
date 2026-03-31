@@ -1,0 +1,32 @@
+{%- doc -%}
+  Renders a section header with a title and optional "View all" link.
+  Matches the product list section header style using Horizon's existing
+  layout-panel-flex, h4 type preset, and link classes.
+
+  @param {string} title - The section heading text
+  @param {string} [link_url] - URL for the "View all" link (omit to hide)
+  @param {string} [link_text] - Link text, defaults to "View all"
+
+  @example
+  {% render 'section-header', title: 'Shop by Department', link_url: routes.collections_url %}
+{%- enddoc -%}
+
+<div
+  class="section-header layout-panel-flex layout-panel-flex--row"
+  style="--horizontal-alignment: space-between; --vertical-alignment: flex-end; align-items: baseline;"
+>
+  <h2 class="h4 h4">{{ title }}</h2>
+  {%- if link_url != blank -%}
+    <a href="{{ link_url }}" class="link">{{ link_text | default: 'View all' }}</a>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .section-header {
+    margin-block-end: 16px;
+  }
+
+  .section-header > .h4 {
+    margin: 0;
+  }
+{% endstylesheet %}

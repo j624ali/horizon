@@ -100,6 +100,20 @@ references/      — Read-only reference code and notes (northbound app, legacy 
 - **`snippets/mega-menu-list.liquid`** — Mega menu rendering. Driven by Shopify navigation link lists.
 - **`config/settings_schema.json`** — Global theme settings (colors, fonts, spacing).
 
+### Built-in UI Infrastructure
+
+Horizon has production-grade reusable components. **Always check these before building custom UI:**
+
+- **Carousel/Slideshow:** `snippets/slideshow.liquid` + `slideshow-slide.liquid` + `slideshow-arrows.liquid` + `slideshow-controls.liquid` + `assets/slideshow.js`. Full carousel with arrows, pagination, autoplay, infinite loop, drag/swipe, and keyboard nav. Use `snippets/resource-list.liquid` for automatic grid/carousel/bento/editorial layout switching.
+- **Cards:** `snippets/resource-card.liquid` (universal), `product-card.liquid`, `collection-card.liquid`, `card-gallery.liquid` (product image carousel in cards).
+- **Media:** `snippets/image.liquid` (responsive images), `video.liquid` (all video types), `background-media.liquid` (full-bleed backgrounds), `overlay.liquid` (color/gradient overlays).
+- **Grids:** `snippets/bento-grid.liquid`, `editorial-product-grid.liquid`, `editorial-collection-grid.liquid`, `product-grid.liquid` (collection page with infinite scroll).
+- **Interactive JS:** `assets/dialog.js` (modals), `anchored-popover.js` (dropdowns), `floating-panel.js` (viewport-aware panels), `accordion-custom.js` (collapsibles), `marquee.js` (continuous scroll).
+- **Layout primitives:** `snippets/spacing-style.liquid`, `gap-style.liquid`, `size-style.liquid`, `layout-panel-style.liquid` — generate responsive CSS variables for spacing, gaps, and sizing.
+- **Utilities:** `snippets/section-header.liquid` (title + "View all"), `button.liquid`, `icon.liquid`, `divider.liquid`, `price.liquid`.
+
+See the `section-builder` skill (`.claude/skills/section-builder/SKILL.md`) for the full inventory with parameters and usage guidance.
+
 ### How Things Connect
 
 1. **JSON templates** (`templates/*.json`) define which sections appear on a page and in what order.
