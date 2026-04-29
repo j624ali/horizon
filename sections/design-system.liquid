@@ -1,0 +1,528 @@
+{% comment %}
+  Internal review surface for the Arctic Fresh design system.
+  Renders the locked tokens (palette, type, radii, spacing, components)
+  so the team can confirm them visually in-theme. Add to a page by
+  setting that page's template to `page.design-system` in admin.
+{% endcomment %}
+
+<div class="section-background color-scheme-1"></div>
+<div class="section section--page-width color-scheme-1 design-system" data-testid="design-system">
+
+  <header class="design-system__hero">
+    <h1 class="h1">Arctic Fresh design system</h1>
+    <p class="design-system__lede">
+      Locked tokens for the Horizon rebuild. Reference for design and engineering.
+      See <code>docs/roadmap.md</code> and <code>docs/nnc-display.md</code>.
+    </p>
+  </header>
+
+  {% comment %} ---------- Palette ---------- {% endcomment %}
+  <section class="design-system__group" aria-labelledby="ds-palette">
+    <h2 class="h3" id="ds-palette">Palette</h2>
+    <p class="design-system__note">Coral is reserved for true sale markdowns. Mint is accent only — primary CTAs are forest.</p>
+    <ul class="design-system__swatches" role="list">
+      <li class="design-system__swatch" style="--swatch-bg: #5adb97; --swatch-text: #003d1c;">
+        <span class="design-system__swatch-label">Mint</span>
+        <code>#5adb97</code>
+      </li>
+      <li class="design-system__swatch" style="--swatch-bg: #00602d; --swatch-text: #ffffff;">
+        <span class="design-system__swatch-label">Forest</span>
+        <code>#00602d</code>
+      </li>
+      <li class="design-system__swatch" style="--swatch-bg: #003d1c; --swatch-text: #ffffff;">
+        <span class="design-system__swatch-label">Deep forest (text)</span>
+        <code>#003d1c</code>
+      </li>
+      <li class="design-system__swatch" style="--swatch-bg: #ff8b69; --swatch-text: #003d1c;">
+        <span class="design-system__swatch-label">Coral (sales only)</span>
+        <code>#ff8b69</code>
+      </li>
+      <li class="design-system__swatch design-system__swatch--bordered" style="--swatch-bg: #ffffff; --swatch-text: #003d1c;">
+        <span class="design-system__swatch-label">White</span>
+        <code>#ffffff</code>
+      </li>
+    </ul>
+  </section>
+
+  {% comment %} ---------- Typography ---------- {% endcomment %}
+  <section class="design-system__group" aria-labelledby="ds-type">
+    <h2 class="h3" id="ds-type">Typography</h2>
+    <p class="design-system__note">Manrope across the board. Body 400, headings 600, h1 only at 700.</p>
+    <div class="design-system__type-scale">
+      <div class="design-system__type-row">
+        <span class="design-system__type-meta">h1 · 39px / 700 / -0.015em</span>
+        <h1 class="h1 h1">Fresh groceries, delivered north.</h1>
+      </div>
+      <div class="design-system__type-row">
+        <span class="design-system__type-meta">h2 · 31px / 600</span>
+        <h2 class="h2 h2">Featured this week</h2>
+      </div>
+      <div class="design-system__type-row">
+        <span class="design-system__type-meta">h3 · 25px / 600</span>
+        <h3 class="h3 h3">Pantry essentials</h3>
+      </div>
+      <div class="design-system__type-row">
+        <span class="design-system__type-meta">h4 · 20px / 600</span>
+        <h4 class="h4 h4">Frozen Whole Strawberries</h4>
+      </div>
+      <div class="design-system__type-row">
+        <span class="design-system__type-meta">h5 · 18px / 500</span>
+        <h5 class="h5 h5">Kirkland Signature</h5>
+      </div>
+      <div class="design-system__type-row">
+        <span class="design-system__type-meta">h6 · 14px / 500</span>
+        <h6 class="h6 h6">NNC subsidized</h6>
+      </div>
+      <div class="design-system__type-row">
+        <span class="design-system__type-meta">body · 16px / 400 / 1.55</span>
+        <p class="design-system__body-sample">
+          Arctic Fresh delivers groceries to fifteen Nunavut communities. Prices include shipping and any
+          Nutrition North Canada subsidy you qualify for, calculated for the community you're shopping from.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {% comment %} ---------- Spacing & radii ---------- {% endcomment %}
+  <section class="design-system__group" aria-labelledby="ds-space">
+    <h2 class="h3" id="ds-space">Spacing & radii</h2>
+    <p class="design-system__note">8pt grid with one 4 step. Card 12px, button 8px, input 6px.</p>
+    <div class="design-system__pair">
+      <div>
+        <h3 class="h5">Spacing scale</h3>
+        <ul class="design-system__scale" role="list">
+          <li><span class="design-system__scale-bar" style="width: 4px;"></span> 4</li>
+          <li><span class="design-system__scale-bar" style="width: 8px;"></span> 8</li>
+          <li><span class="design-system__scale-bar" style="width: 12px;"></span> 12</li>
+          <li><span class="design-system__scale-bar" style="width: 16px;"></span> 16</li>
+          <li><span class="design-system__scale-bar" style="width: 24px;"></span> 24</li>
+          <li><span class="design-system__scale-bar" style="width: 32px;"></span> 32</li>
+          <li><span class="design-system__scale-bar" style="width: 48px;"></span> 48</li>
+          <li><span class="design-system__scale-bar" style="width: 64px;"></span> 64</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="h5">Border radii</h3>
+        <ul class="design-system__radii" role="list">
+          <li><span class="design-system__radius-tile" style="border-radius: 4px;"></span> 4 · pill</li>
+          <li><span class="design-system__radius-tile" style="border-radius: 6px;"></span> 6 · input</li>
+          <li><span class="design-system__radius-tile" style="border-radius: 8px;"></span> 8 · button</li>
+          <li><span class="design-system__radius-tile" style="border-radius: 12px;"></span> 12 · card</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {% comment %} ---------- Buttons ---------- {% endcomment %}
+  <section class="design-system__group" aria-labelledby="ds-buttons">
+    <h2 class="h3" id="ds-buttons">Buttons & inputs</h2>
+    <p class="design-system__note">44px touch target, 20px padding-x, 8px radius. Forest primary, outlined secondary.</p>
+    <div class="design-system__button-row">
+      <button type="button" class="design-system__btn design-system__btn--primary">Add to cart</button>
+      <button type="button" class="design-system__btn design-system__btn--secondary">View details</button>
+      <button type="button" class="design-system__btn design-system__btn--primary" disabled>Out of stock</button>
+    </div>
+    <div class="design-system__input-row">
+      <label class="design-system__field">
+        <span class="design-system__field-label">Email</span>
+        <input type="email" class="design-system__input" placeholder="you@example.com" />
+      </label>
+      <label class="design-system__field">
+        <span class="design-system__field-label">Search</span>
+        <input type="search" class="design-system__input" placeholder="Search 9,000+ items" />
+      </label>
+    </div>
+  </section>
+
+  {% comment %} ---------- Product card ---------- {% endcomment %}
+  <section class="design-system__group" aria-labelledby="ds-card">
+    <h2 class="h3" id="ds-card">Product card</h2>
+    <p class="design-system__note">Vendor → title → price → NNC pill → ATC. No strikethrough on subsidized prices. Coral reserved for true sales.</p>
+    <ul class="design-system__cards" role="list">
+      <li class="ds-card">
+        <div class="ds-card__image" aria-hidden="true"></div>
+        <div class="ds-card__body">
+          <span class="ds-card__vendor">Kirkland Signature</span>
+          <h3 class="h6 ds-card__title">Frozen Whole Strawberries, 1.81 kg</h3>
+          <span class="ds-card__price">$24.99</span>
+          <span class="ds-card__pill">NNC subsidized</span>
+          <button type="button" class="design-system__btn design-system__btn--primary ds-card__atc">Add to cart</button>
+        </div>
+      </li>
+      <li class="ds-card">
+        <div class="ds-card__image ds-card__image--alt" aria-hidden="true"></div>
+        <div class="ds-card__body">
+          <span class="ds-card__vendor">Arctic Fresh</span>
+          <h3 class="h6 ds-card__title">Whole Wheat Bread, 675 g</h3>
+          <span class="ds-card__price">$6.49</span>
+          <span class="ds-card__pill">NNC subsidized</span>
+          <button type="button" class="design-system__btn design-system__btn--primary ds-card__atc">Add to cart</button>
+        </div>
+      </li>
+      <li class="ds-card">
+        <div class="ds-card__image ds-card__image--alt2" aria-hidden="true">
+          <span class="ds-card__sale-badge">Sale</span>
+        </div>
+        <div class="ds-card__body">
+          <span class="ds-card__vendor">Tide</span>
+          <h3 class="h6 ds-card__title">Laundry Detergent, 4.43 L</h3>
+          <span class="ds-card__price ds-card__price--sale">
+            $19.99
+            <span class="ds-card__compare">$24.99</span>
+          </span>
+          <button type="button" class="design-system__btn design-system__btn--primary ds-card__atc">Add to cart</button>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+</div>
+
+{% stylesheet %}
+  .design-system {
+    padding-block: var(--arctic-section-padding-block);
+    color: var(--color-foreground);
+  }
+
+  .design-system__hero {
+    margin-block-end: 48px;
+  }
+
+  .design-system__lede {
+    max-width: 65ch;
+    color: rgb(var(--color-foreground-rgb) / 0.75);
+  }
+
+  .design-system__group {
+    padding-block: 32px;
+    border-block-start: 1px solid var(--arctic-card-border-color);
+  }
+
+  .design-system__note {
+    max-width: 65ch;
+    margin-block: 8px 24px;
+    color: rgb(var(--color-foreground-rgb) / 0.7);
+    font-size: 0.875rem;
+  }
+
+  .design-system code {
+    font-family: ui-monospace, "SFMono-Regular", monospace;
+    font-size: 0.8125rem;
+  }
+
+  /* Palette swatches */
+  .design-system__swatches {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .design-system__swatch {
+    background: var(--swatch-bg);
+    color: var(--swatch-text);
+    padding: 24px 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 120px;
+    justify-content: flex-end;
+  }
+
+  .design-system__swatch--bordered {
+    border: 1px solid var(--arctic-card-border-color);
+  }
+
+  .design-system__swatch-label {
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  /* Type scale */
+  .design-system__type-scale {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .design-system__type-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .design-system__type-meta {
+    font-family: ui-monospace, "SFMono-Regular", monospace;
+    font-size: 0.75rem;
+    color: rgb(var(--color-foreground-rgb) / 0.5);
+  }
+
+  .design-system__body-sample {
+    max-width: 65ch;
+    margin: 0;
+  }
+
+  /* Spacing + radii */
+  .design-system__pair {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 750px) {
+    .design-system__pair {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .design-system__scale,
+  .design-system__radii {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.875rem;
+  }
+
+  .design-system__scale li,
+  .design-system__radii li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .design-system__scale-bar {
+    background: #00602d;
+    height: 16px;
+    display: inline-block;
+  }
+
+  .design-system__radius-tile {
+    background: #00602d;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+  }
+
+  /* Buttons */
+  .design-system__button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-block-end: 24px;
+  }
+
+  .design-system__btn {
+    height: 44px;
+    padding-inline: 20px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+
+  .design-system__btn--primary {
+    background: #00602d;
+    color: #ffffff;
+    border: 1px solid #00602d;
+  }
+
+  .design-system__btn--primary:hover:not(:disabled) {
+    background: #004d24;
+    border-color: #004d24;
+  }
+
+  .design-system__btn--primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .design-system__btn--secondary {
+    background: transparent;
+    color: #00602d;
+    border: 1px solid #00602d;
+  }
+
+  .design-system__btn--secondary:hover {
+    background: rgb(0 96 45 / 0.06);
+  }
+
+  .design-system__btn:focus-visible {
+    outline: 2px solid #00602d;
+    outline-offset: 2px;
+  }
+
+  .design-system__input-row {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+    max-width: 480px;
+  }
+
+  @media (min-width: 750px) {
+    .design-system__input-row {
+      grid-template-columns: 1fr 1fr;
+      max-width: 720px;
+    }
+  }
+
+  .design-system__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .design-system__field-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .design-system__input {
+    height: 44px;
+    padding-inline: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--arctic-card-border-color);
+    background: #ffffff;
+    color: #003d1c;
+    font: inherit;
+  }
+
+  .design-system__input:focus-visible {
+    outline: 2px solid #00602d;
+    outline-offset: 2px;
+  }
+
+  /* Product card */
+  .design-system__cards {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--arctic-grid-gap);
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+
+  .ds-card {
+    border: 1px solid var(--arctic-card-border-color);
+    border-radius: 12px;
+    box-shadow: var(--arctic-card-shadow);
+    background: #ffffff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 150ms ease;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ds-card:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  .ds-card__image {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(135deg, #d6f4e3, #a7e6c0);
+    position: relative;
+  }
+
+  .ds-card__image--alt {
+    background: linear-gradient(135deg, #f4ead6, #e6c0a7);
+  }
+
+  .ds-card__image--alt2 {
+    background: linear-gradient(135deg, #d6e8f4, #a7c0e6);
+  }
+
+  .ds-card__body {
+    padding: var(--arctic-card-padding);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ds-card__vendor {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(0 61 28 / 0.55);
+  }
+
+  .ds-card__title {
+    margin: 0;
+    color: #003d1c;
+  }
+
+  .ds-card__price {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #003d1c;
+    margin-block-start: 4px;
+  }
+
+  .ds-card__price--sale {
+    color: #003d1c;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+  }
+
+  .ds-card__compare {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: rgb(0 61 28 / 0.5);
+    text-decoration: line-through;
+  }
+
+  .ds-card__pill {
+    display: inline-flex;
+    align-self: flex-start;
+    background: var(--arctic-nnc-pill-bg);
+    color: var(--arctic-nnc-pill-text);
+    padding: var(--arctic-nnc-pill-padding);
+    border-radius: var(--arctic-nnc-pill-radius);
+    font-size: var(--arctic-nnc-pill-font-size);
+    font-weight: var(--arctic-nnc-pill-font-weight);
+    letter-spacing: var(--arctic-nnc-pill-letter-spacing);
+    margin-block-start: 4px;
+  }
+
+  .ds-card__sale-badge {
+    position: absolute;
+    inset-block-start: 8px;
+    inset-inline-end: 8px;
+    background: var(--arctic-sale-color);
+    color: var(--arctic-sale-text);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .ds-card__atc {
+    margin-block-start: 12px;
+    width: 100%;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Design system",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Design system"
+    }
+  ]
+}
+{% endschema %}

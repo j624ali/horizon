@@ -1,0 +1,8 @@
+{
+  "sections": {
+    "design_system": {
+      "type": "design-system"
+    }
+  },
+  "order": ["design_system"]
+}
