@@ -85,9 +85,13 @@
         "padding-block-start": 100,
         "padding-block-end": 72
       }
+    },
+    "department_shortcuts": {
+      "type": "department-shortcuts"
     }
   },
   "order": [
-    "hero_jVaWmY"
+    "hero_jVaWmY",
+    "department_shortcuts"
   ]
 }

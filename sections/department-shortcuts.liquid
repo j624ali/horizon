@@ -1,0 +1,186 @@
+{%- comment -%}
+  DEPARTMENT SHORTCUTS — DEV PREVIEW MODE
+
+  This section currently renders a HARDCODED list of placeholder departments so we
+  can see the layout end-to-end without depending on Shopify admin state (collections
+  may be missing handles or images on the live store, which would otherwise hide chips).
+
+  When ready to switch to live data:
+    1. Verify all referenced collection handles exist on the live store with admin
+       images uploaded — use `admin_gql` (see horizon/CLAUDE.md > "Live Store Recon").
+    2. Delete the `dummy_departments` block and the dummy markup loop below.
+    3. Uncomment the LIVE DATA block below it.
+    4. Confirmed live handles (verified via admin_gql, this conversation):
+         meat, fruits-vegetables, dairy-eggs, pantry, frozen-food, drinks,
+         home-lifestyle, health-beauty-pharmacy
+       Baby & Kids has no umbrella collection on the live store — either create one
+       in admin (handle: baby-kids) and upload an image, or omit it from the array.
+{%- endcomment -%}
+
+{%- liquid
+  # Each pair is: handle-or-slug | display title
+  # Handles are placeholder slugs; URLs fall through to /collections/{slug} which 404s
+  # in dev — fine for layout work, swap in real handles before going live.
+  assign dummy_departments = 'meat|Meat & Seafood,produce|Fruits & Vegetables,dairy-eggs|Dairy & Eggs,pantry|Pantry,frozen-food|Frozen Food,drinks|Drinks,baby-kids|Baby & Kids,home-lifestyle|Home & Lifestyle,health-beauty|Health & Beauty,snacks|Snacks,bakery|Bakery,deli|Deli' | split: ','
+-%}
+
+<div class="section-background color-scheme-1"></div>
+<div class="section section--page-width color-scheme-1 department-shortcuts" data-testid="department-shortcuts">
+  <ul class="department-shortcuts__list" role="list">
+    {%- for entry in dummy_departments -%}
+      {%- assign parts = entry | split: '|' -%}
+      {%- assign slug = parts[0] -%}
+      {%- assign title = parts[1] -%}
+      <li class="department-shortcuts__item">
+        <a href="/collections/{{ slug }}" class="department-chip" aria-label="Shop {{ title }}">
+          <span class="department-chip__media">
+            {%- comment -%} blank circle — no text overlay; the chip label below carries the name {%- endcomment -%}
+            <img
+              src="https://placehold.co/200x200/e8e8e8/e8e8e8.png"
+              alt=""
+              width="200"
+              height="200"
+              loading="lazy"
+              class="department-chip__image"
+            >
+          </span>
+          <span class="department-chip__label h6">{{ title }}</span>
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+{%- comment -%}
+  ──────────────────────────────────────────────────────────────────────────────
+  LIVE DATA VERSION — uncomment when collections are confirmed in admin.
+  Filters out collections that don't exist OR don't have an admin-uploaded image
+  (collection.image, NOT collection.featured_image — featured_image falls back to
+  the first product's image, which would let imageless collections render).
+  ──────────────────────────────────────────────────────────────────────────────
+
+  {%- liquid
+    assign handles = 'meat,fruits-vegetables,dairy-eggs,pantry,frozen-food,drinks,baby-kids,home-lifestyle,health-beauty-pharmacy' | split: ','
+  -%}
+
+  <div class="section-background color-scheme-1"></div>
+  <div class="section section--page-width color-scheme-1 department-shortcuts" data-testid="department-shortcuts">
+    <ul class="department-shortcuts__list" role="list">
+      {%- for handle in handles -%}
+        {%- assign collection = collections[handle] -%}
+        {%- if collection.id and collection.image != blank -%}
+          <li class="department-shortcuts__item">
+            <a href="{{ collection.url }}" class="department-chip" aria-label="Shop {{ collection.title }}">
+              <span class="department-chip__media">
+                {% render 'image', image: collection.image, height: 200, class: 'department-chip__image' %}
+              </span>
+              <span class="department-chip__label h6">{{ collection.title }}</span>
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+{%- endcomment -%}
+
+{% stylesheet %}
+  .department-shortcuts {
+    padding-block: var(--padding-sm, 1rem);
+  }
+
+  .department-shortcuts__list {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--page-margin, 1rem);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .department-shortcuts__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .department-shortcuts__item {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .department-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 5.5rem;
+    text-decoration: none;
+    color: var(--color-foreground);
+  }
+
+  .department-chip__media {
+    display: block;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: var(--color-background-subtle, #f4f4f4);
+  }
+
+  .department-chip__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .department-chip__label {
+    text-align: center;
+    line-height: 1.2;
+    /* Allow up to 2 lines, then ellipsize. Long names like "Fruits & Vegetables" */
+    /* will wrap naturally; very long names stay tidy instead of overflowing. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: break-word;
+  }
+
+  .department-chip:focus-visible {
+    outline: var(--focus-outline-width) solid currentcolor;
+    outline-offset: var(--focus-outline-offset);
+    border-radius: var(--card-corner-radius, 4px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .department-chip__media {
+      transition: transform 0.2s ease;
+    }
+
+    .department-chip:hover .department-chip__media,
+    .department-chip:focus-visible .department-chip__media {
+      transform: scale(1.05);
+    }
+  }
+
+  @media (min-width: 750px) {
+    .department-shortcuts__list {
+      justify-content: center;
+      overflow-x: visible;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Department shortcuts",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Department shortcuts",
+      "category": "Navigation"
+    }
+  ]
+}
+{% endschema %}
