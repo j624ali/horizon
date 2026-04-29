@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arctic Fresh — Featured Products</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-dark-green: #00602d;
+      --color-light-green: #5adb97;
+      --color-coral: #ff8b69;
+      --color-cream: #f5f7f3;
+      --color-text: #232323;
+      --color-muted: #6b6b6b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: var(--color-text);
+      background: #fff;
+      line-height: 1.5;
+    }
+
+    .demo-label {
+      max-width: 1200px;
+      margin: 24px auto 0;
+      padding: 0 24px;
+      font-size: 12px;
+      color: var(--color-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .featured {
+      padding: 48px 0 56px;
+      margin-top: 16px;
+    }
+
+    .featured__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .featured__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .featured__title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--color-dark-green);
+    }
+
+    .featured__controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .featured__arrows { display: none; gap: 8px; }
+
+    @media (min-width: 750px) {
+      .featured__arrows { display: flex; }
+    }
+
+    .featured__view-all {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-dark-green);
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+      padding-bottom: 2px;
+    }
+
+    .featured__view-all:hover { color: var(--color-light-green); }
+
+    .featured__arrow {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 96, 45, 0.2);
+      background: #fff;
+      color: var(--color-dark-green);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .featured__arrow:hover:not(:disabled) {
+      background: var(--color-dark-green);
+      color: #fff;
+      border-color: var(--color-dark-green);
+    }
+
+    .featured__arrow:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .featured__arrow svg { width: 18px; height: 18px; }
+
+    .product-list {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 4px 0 16px;
+      margin: 0 -24px;
+      padding-inline: 24px;
+      list-style: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .product-list::-webkit-scrollbar { display: none; }
+    .product-list { scrollbar-width: none; }
+
+    .product-card {
+      flex: 0 0 auto;
+      width: 64%;
+      max-width: 240px;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .product-card:hover {
+      border-color: rgba(0, 96, 45, 0.3);
+      transform: translateY(-2px);
+    }
+
+    @media (min-width: 640px) {
+      .product-card { width: 240px; }
+    }
+
+    .product-card__media {
+      position: relative;
+      aspect-ratio: 1;
+      background: var(--color-cream);
+      display: grid;
+      place-items: center;
+      font-size: 64px;
+    }
+
+    .product-card__badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--color-light-green);
+      color: var(--color-dark-green);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .product-card__body {
+      padding: 14px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .product-card__title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--color-text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.6em;
+    }
+
+    .product-card__unit {
+      font-size: 12px;
+      color: var(--color-muted);
+      margin-top: 2px;
+    }
+
+    .product-card__price {
+      margin-top: 8px;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-dark-green);
+    }
+  </style>
+</head>
+<body>
+  <p class="demo-label">Demo 3 · Featured products carousel</p>
+
+  <section class="featured" aria-labelledby="featured-heading">
+    <div class="featured__inner">
+      <header class="featured__header">
+        <h2 id="featured-heading" class="featured__title">Fresh picks this week</h2>
+        <div class="featured__controls">
+          <div class="featured__arrows">
+            <button class="featured__arrow" type="button" data-arrow="prev" aria-label="Previous products">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+            <button class="featured__arrow" type="button" data-arrow="next" aria-label="Next products">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+          <a class="featured__view-all" href="#">View all</a>
+        </div>
+      </header>
+
+      <ul class="product-list" data-product-list role="list">
+        <li>
+          <a class="product-card" href="#">
+            <div class="product-card__media">
+              <span class="product-card__badge">NNC</span>
+              <span aria-hidden="true">🥛</span>
+            </div>
+            <div class="product-card__body">
+              <h3 class="product-card__title">Dairyland 2% Milk</h3>
+              <span class="product-card__unit">2 L carton</span>
+              <span class="product-card__price">$8.49</span>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="product-card" href="#">
+            <div class="product-card__media">
+              <span class="product-card__badge">NNC</span>
+              <span aria-hidden="true">🍌</span>
+            </div>
+            <div class="product-card__body">
+              <h3 class="product-card__title">Fresh Bananas</h3>
+              <span class="product-card__unit">Approx. 900 g</span>
+              <span class="product-card__price">$5.99</span>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="product-card" href="#">
+            <div class="product-card__media">
+              <span class="product-card__badge">NNC</span>
+              <span aria-hidden="true">🥚</span>
+            </div>
+            <div class="product-card__body">
+              <h3 class="product-card__title">Free-Range Large Eggs</h3>
+              <span class="product-card__unit">1 dozen</span>
+              <span class="product-card__price">$7.99</span>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="product-card" href="#">
+            <div class="product-card__media">
+              <span class="product-card__badge">NNC</span>
+              <span aria-hidden="true">🥩</span>
+            </div>
+            <div class="product-card__body">
+              <h3 class="product-card__title">Lean Ground Beef</h3>
+              <span class="product-card__unit">500 g</span>
+              <span class="product-card__price">$12.99</span>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="product-card" href="#">
+            <div class="product-card__media">
+              <span class="product-card__badge">NNC</span>
+              <span aria-hidden="true">🍞</span>
+            </div>
+            <div class="product-card__body">
+              <h3 class="product-card__title">Whole Wheat Bread</h3>
+              <span class="product-card__unit">675 g loaf</span>
+              <span class="product-card__price">$6.49</span>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="product-card" href="#">
+            <div class="product-card__media">
+              <span class="product-card__badge">NNC</span>
+              <span aria-hidden="true">🍗</span>
+            </div>
+            <div class="product-card__body">
+              <h3 class="product-card__title">Frozen Chicken Breast</h3>
+              <span class="product-card__unit">1 kg bag</span>
+              <span class="product-card__price">$19.99</span>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="product-card" href="#">
+            <div class="product-card__media">
+              <span aria-hidden="true">🥜</span>
+            </div>
+            <div class="product-card__body">
+              <h3 class="product-card__title">Natural Peanut Butter</h3>
+              <span class="product-card__unit">1 kg jar</span>
+              <span class="product-card__price">$9.49</span>
+            </div>
+          </a>
+        </li>
+        <li>
+          <a class="product-card" href="#">
+            <div class="product-card__media">
+              <span aria-hidden="true">🧴</span>
+            </div>
+            <div class="product-card__body">
+              <h3 class="product-card__title">Dish Soap</h3>
+              <span class="product-card__unit">740 mL</span>
+              <span class="product-card__price">$6.29</span>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <script>
+    const list = document.querySelector('[data-product-list]');
+    const prev = document.querySelector('[data-arrow="prev"]');
+    const next = document.querySelector('[data-arrow="next"]');
+
+    const step = () => {
+      const card = list.querySelector('.product-card');
+      if (!card) return 256;
+      const gap = parseFloat(getComputedStyle(list).gap) || 16;
+      return card.getBoundingClientRect().width + gap;
+    };
+
+    const updateArrows = () => {
+      const max = list.scrollWidth - list.clientWidth;
+      prev.disabled = list.scrollLeft <= 1;
+      next.disabled = list.scrollLeft >= max - 1;
+    };
+
+    prev.addEventListener('click', () => list.scrollBy({ left: -step() * 2, behavior: 'smooth' }));
+    next.addEventListener('click', () => list.scrollBy({ left: step() * 2, behavior: 'smooth' }));
+    list.addEventListener('scroll', updateArrows, { passive: true });
+    window.addEventListener('resize', updateArrows);
+    updateArrows();
+  </script>
+</body>
+</html>

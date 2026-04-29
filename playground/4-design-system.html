@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design system — direction comparator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /*
+      ============================================================================
+      DESIGN SYSTEM — DIRECTION COMPARATOR
+      ============================================================================
+      Three full design languages. Click the tabs to switch.
+
+      Each direction varies across:
+        · palette (color tokens)
+        · typography (font family for body & headings, weights, tracking, scale)
+        · radius (input / button / card / chip — different philosophies)
+        · density (section padding, card padding, button padding)
+        · component shape (button shape, card border/shadow, chip shape)
+
+      Markup is identical across tabs — every visual difference comes from tokens.
+      ============================================================================
+    */
+
+    /* ─── DIRECTION A · LOGO-FAITHFUL (mint surface, coral accent) ─────────── */
+    /* Closest to the actual brand identity. Mint as the prominent surface color,  */
+    /* deep forest as text, coral (the carrot) as the deliberate accent. Manrope   */
+    /* picks up the rounded geometric character of the wordmark. Friendly, warm.   */
+    .direction-a {
+      /* palette — mint is the brand surface, forest is the brand text */
+      --brand-primary:       #5adb97;          /* mint — prominent surfaces, primary CTAs */
+      --brand-primary-hover: #3fc984;
+      --brand-primary-fg:    #003d1c;          /* deep forest text on mint */
+      --brand-secondary:     #00602d;          /* forest — secondary CTAs, headings, footer bg */
+      --brand-secondary-fg:  #ffffff;
+      --brand-accent:        #ff8b69;          /* carrot coral — sale tags, highlights */
+      --brand-accent-hover:  #f06a44;
+      --brand-accent-soft:   #ffe4dc;
+      --brand-accent-fg:     #5c1d0d;
+      --bg:                  #ffffff;
+      --surface-subtle:      #f7faf8;
+      --surface-raised:      #ffffff;
+      --text:                #1f2421;
+      --text-soft:           #52525b;
+      --text-muted:          #71717a;
+      --border:              #e4e4e7;
+      --border-strong:       #d4d4d8;
+      --neutral-50:  #fafafa; --neutral-100: #f4f4f5; --neutral-200: #e4e4e7;
+      --neutral-300: #d4d4d8; --neutral-400: #a1a1aa; --neutral-500: #71717a;
+      --neutral-600: #52525b; --neutral-700: #3f3f46; --neutral-800: #27272a;
+      --neutral-900: #18181b;
+      --success: #16a34a; --warning: #ca8a04; --error: #dc2626; --info: #2563eb;
+
+      /* typography — Manrope (warm, rounded geometric, matches the logo wordmark) */
+      --font-body:           'Manrope', system-ui, sans-serif;
+      --font-heading:        'Manrope', system-ui, sans-serif;
+      --body-leading:        1.55;
+      --heading-leading:     1.15;
+      --heading-weight:      700;
+      --heading-tracking:    -0.015em;
+      --label-tracking:      0.06em;
+
+      /* type scale */
+      --text-xs:   12px; --text-sm:   14px; --text-base: 16px;
+      --text-lg:   18px; --text-xl:   20px; --text-2xl:  24px;
+      --text-3xl:  30px; --text-4xl:  36px; --text-5xl:  48px;
+
+      /* radius */
+      --radius-input:    6px;
+      --radius-button:   6px;
+      --radius-card:     8px;
+      --radius-chip:     50%;     /* full circle */
+      --radius-large:    16px;
+
+      /* density */
+      --section-py:      64px;
+      --hero-py:         80px;
+      --card-padding:    16px;
+      --btn-pad-sm:      8px 14px;
+      --btn-pad-md:      12px 20px;
+      --btn-pad-lg:      16px 24px;
+      --btn-weight:      500;
+      --btn-tracking:    0;
+      --chip-size:       72px;
+      --chip-icon-size:  32px;
+
+      /* component personality */
+      --card-shadow:         none;
+      --card-shadow-hover:   0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+      --card-border:         1px solid var(--border);
+      --card-hover-shift:    translateY(-2px);
+      --duration:            200ms;
+    }
+
+    /* ─── DIRECTION B · REFINED (forest-forward, modernist) ────────────────── */
+    /* Same brand DNA, dressier sibling. Forest primary, mint reduced to a         */
+    /* supporting accent. Inter throughout with heavier heading weights and        */
+    /* tighter tracking. Sharp 4px radii. No serif — the playful logo would        */
+    /* clash with editorial typography. This is "the friendly grocery, grown up."  */
+    .direction-b {
+      /* palette — forest primary, mint as accent only */
+      --brand-primary:       #00602d;
+      --brand-primary-hover: #004d24;
+      --brand-primary-fg:    #ffffff;
+      --brand-secondary:     #003d1c;
+      --brand-secondary-fg:  #ffffff;
+      --brand-accent:        #5adb97;
+      --brand-accent-hover:  #3fc984;
+      --brand-accent-soft:   #d4f5e3;
+      --brand-accent-fg:     #003d1c;
+      --bg:                  #ffffff;
+      --surface-subtle:      #f7f9f8;
+      --surface-raised:      #ffffff;
+      --text:                #1a2521;
+      --text-soft:           #4a5651;
+      --text-muted:          #6b7570;
+      --border:              #dde2df;
+      --border-strong:       #b9c0bc;
+      --neutral-50:  #f7f9f8; --neutral-100: #eef2f0; --neutral-200: #d8e0dc;
+      --neutral-300: #b9c5bf; --neutral-400: #8ea098; --neutral-500: #6b7e76;
+      --neutral-600: #4d605a; --neutral-700: #364541; --neutral-800: #213029;
+      --neutral-900: #14312b;
+      --success: #16a34a; --warning: #d97706; --error: #dc2626; --info: #0e7490;
+
+      /* typography — Inter, heavier weights, tighter */
+      --font-body:           'Inter', system-ui, sans-serif;
+      --font-heading:        'Inter', system-ui, sans-serif;
+      --body-leading:        1.5;
+      --heading-leading:     1.1;
+      --heading-weight:      700;
+      --heading-tracking:    -0.025em;
+      --label-tracking:      0.08em;
+
+      /* type scale — slightly tighter on the high end, headings are weighty serif */
+      --text-xs:   12px; --text-sm:   14px; --text-base: 16px;
+      --text-lg:   18px; --text-xl:   20px; --text-2xl:  22px;
+      --text-3xl:  28px; --text-4xl:  34px; --text-5xl:  44px;
+
+      /* radius — sharp, intentional */
+      --radius-input:    4px;
+      --radius-button:   4px;
+      --radius-card:     4px;
+      --radius-chip:     12px;     /* squircle */
+      --radius-large:    8px;
+
+      /* density — tighter, denser feel */
+      --section-py:      56px;
+      --hero-py:         72px;
+      --card-padding:    16px;
+      --btn-pad-sm:      8px 14px;
+      --btn-pad-md:      12px 22px;
+      --btn-pad-lg:      14px 28px;
+      --btn-weight:      600;
+      --btn-tracking:    0;
+      --chip-size:       80px;
+      --chip-icon-size:  32px;
+
+      /* component personality — borders, no shadows */
+      --card-shadow:         none;
+      --card-shadow-hover:   none;
+      --card-border:         1px solid var(--border);
+      --card-hover-shift:    none;
+      --duration:            150ms;
+    }
+
+    /* ─── DIRECTION C · BOLD & PLAYFUL (modern grocery brand) ──────────────── */
+    /* Distinctive, branded, slightly youthful. Sora display + Inter body, full    */
+    /* pill buttons, generous 16-24px radii, airy spacing. Punchy mint primary +   */
+    /* warm coral accent — revives legacy duotone but executed deliberately.       */
+    .direction-c {
+      /* palette */
+      --brand-primary:       #00a86b;
+      --brand-primary-hover: #008f5b;
+      --brand-primary-fg:    #ffffff;
+      --brand-accent:        #ff7a59;
+      --brand-accent-hover:  #f55c3c;
+      --brand-accent-soft:   #ffe4dc;
+      --brand-accent-fg:     #5c1d0d;
+      --bg:                  #ffffff;
+      --surface-subtle:      #f9fafb;
+      --surface-raised:      #ffffff;
+      --text:                #0c0a09;
+      --text-soft:           #44403c;
+      --text-muted:          #78716c;
+      --border:              #e7e5e4;
+      --border-strong:       #d6d3d1;
+      --neutral-50:  #fafaf9; --neutral-100: #f5f5f4; --neutral-200: #e7e5e4;
+      --neutral-300: #d6d3d1; --neutral-400: #a8a29e; --neutral-500: #78716c;
+      --neutral-600: #57534e; --neutral-700: #44403c; --neutral-800: #292524;
+      --neutral-900: #1c1917;
+      --success: #16a34a; --warning: #ca8a04; --error: #dc2626; --info: #2563eb;
+
+      /* typography — Sora display headings */
+      --font-body:           'Inter', system-ui, sans-serif;
+      --font-heading:        'Sora', system-ui, sans-serif;
+      --body-leading:        1.55;
+      --heading-leading:     1.05;
+      --heading-weight:      700;
+      --heading-tracking:    -0.025em;
+      --label-tracking:      0.06em;
+
+      /* type scale — punchier */
+      --text-xs:   12px; --text-sm:   14px; --text-base: 16px;
+      --text-lg:   18px; --text-xl:   22px; --text-2xl:  26px;
+      --text-3xl:  34px; --text-4xl:  44px; --text-5xl:  60px;
+
+      /* radius — pills and large rounding */
+      --radius-input:    12px;
+      --radius-button:   999px;    /* full pill */
+      --radius-card:     16px;
+      --radius-chip:     999px;    /* pill chip */
+      --radius-large:    24px;
+
+      /* density — airy, generous */
+      --section-py:      96px;
+      --hero-py:         120px;
+      --card-padding:    20px;
+      --btn-pad-sm:      10px 18px;
+      --btn-pad-md:      14px 24px;
+      --btn-pad-lg:      18px 32px;
+      --btn-weight:      600;
+      --btn-tracking:    0;
+      --chip-size:       96px;
+      --chip-icon-size:  36px;
+
+      /* component personality — soft shadow, no border, motion */
+      --card-shadow:         0 1px 3px rgba(0,0,0,0.06);
+      --card-shadow-hover:   0 12px 28px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.06);
+      --card-border:         none;
+      --card-hover-shift:    translateY(-4px);
+      --duration:            220ms;
+    }
+
+    /* ─── BASE ─────────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--body-leading);
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .preview {
+      background: var(--bg); color: var(--text);
+      font-family: var(--font-body);
+      transition: background var(--duration) ease, color var(--duration) ease;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+      line-height: var(--heading-leading);
+      font-family: var(--font-heading);
+      font-weight: var(--heading-weight);
+      letter-spacing: var(--heading-tracking);
+    }
+    p { margin: 0; }
+    img { max-width: 100%; display: block; }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: inherit; }
+
+    /* ─── TAB BAR + DESIGN NOTES ───────────────────────────────────────────── */
+    .tab-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: #0f172a; color: #fff;
+      padding: 12px 24px;
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .tab-bar__label {
+      font: 600 13px/1 'Inter', sans-serif; letter-spacing: 0.06em;
+      text-transform: uppercase; opacity: 0.7;
+    }
+    .tab {
+      background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 16px; border-radius: 6px;
+      font: 500 14px/1 'Inter', sans-serif;
+      transition: all 150ms ease;
+    }
+    .tab:hover { background: rgba(255,255,255,0.1); }
+    .tab[aria-selected="true"] { background: #fff; color: #0f172a; border-color: #fff; }
+
+    .notes {
+      padding: 16px 24px; background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--duration) ease, border-color var(--duration) ease;
+    }
+    .notes__inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 2fr; gap: 32px; align-items: start;
+    }
+    .notes__title {
+      font-family: var(--font-heading);
+      font-size: var(--text-2xl);
+      font-weight: var(--heading-weight);
+      letter-spacing: var(--heading-tracking);
+      color: var(--text); margin-bottom: 4px;
+    }
+    .notes__voice { font-size: var(--text-sm); color: var(--text-soft); }
+    .notes__specs {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px 20px;
+    }
+    .notes__spec {
+      font-size: var(--text-xs); color: var(--text-soft);
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .notes__spec strong {
+      font-size: var(--text-xs); font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .notes__spec span { font-size: var(--text-sm); color: var(--text); font-weight: 500; }
+
+    /* ─── SECTION FRAMING ──────────────────────────────────────────────────── */
+    .section { padding: var(--section-py) 24px; transition: padding var(--duration) ease; }
+    .section--bg { background: var(--surface-subtle); }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .label-eyebrow {
+      font-size: var(--text-xs); font-weight: 600;
+      letter-spacing: var(--label-tracking); text-transform: uppercase;
+      color: var(--text-soft); margin-bottom: 12px;
+      font-family: var(--font-body);
+    }
+    .section-title { font-size: var(--text-3xl); color: var(--text); margin-bottom: 8px; }
+    .section-sub { color: var(--text-soft); margin-bottom: 32px; max-width: 56ch; }
+
+    /* ─── HEADER MOCKUP ────────────────────────────────────────────────────── */
+    .mock-header {
+      display: flex; align-items: center; gap: 24px;
+      padding: 16px 24px;
+      background: var(--surface-raised); border-bottom: 1px solid var(--border);
+      transition: background var(--duration) ease, border-color var(--duration) ease;
+    }
+    .mock-logo-img {
+      height: 32px; width: auto; flex-shrink: 0;
+      display: block;
+    }
+    .mock-footer__brand-img {
+      height: 36px; width: auto;
+      display: block; margin-bottom: 12px;
+    }
+    .mock-nav { display: flex; gap: 20px; flex-wrap: wrap; }
+    .mock-nav a {
+      font-size: var(--text-sm); font-weight: 500; color: var(--text);
+      text-decoration: none; padding: 8px 0;
+    }
+    .mock-nav a:hover { color: var(--brand-primary); }
+    .mock-search {
+      flex: 1; min-width: 200px; max-width: 400px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-input);
+      color: var(--text-soft); font-size: var(--text-sm);
+    }
+    .mock-icons { display: flex; gap: 8px; }
+    .icon-btn {
+      width: 40px; height: 40px; display: grid; place-items: center;
+      background: transparent; border: none;
+      border-radius: var(--radius-input);
+      color: var(--text);
+    }
+    .icon-btn:hover { background: var(--surface-subtle); }
+
+    /* ─── HERO ─────────────────────────────────────────────────────────────── */
+    .hero {
+      padding: var(--hero-py) 24px;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, color-mix(in srgb, var(--brand-primary) 70%, var(--brand-accent)) 100%);
+      color: var(--brand-primary-fg);
+      text-align: center;
+      transition: padding var(--duration) ease;
+    }
+    .hero h1 {
+      font-size: var(--text-5xl);
+      margin-bottom: 16px;
+    }
+    .hero p {
+      font-size: var(--text-lg);
+      opacity: 0.92; max-width: 56ch; margin: 0 auto 32px;
+      font-family: var(--font-body);
+    }
+    .hero__ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ─── BUTTONS ──────────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: var(--font-body);
+      font-weight: var(--btn-weight);
+      letter-spacing: var(--btn-tracking);
+      line-height: 1;
+      border: 1px solid transparent;
+      border-radius: var(--radius-button);
+      cursor: pointer;
+      transition: all var(--duration) ease;
+      white-space: nowrap;
+    }
+    .btn--primary { background: var(--brand-primary); color: var(--brand-primary-fg); }
+    .btn--primary:hover { background: var(--brand-primary-hover); }
+    .btn--secondary {
+      background: var(--surface-raised); color: var(--brand-primary);
+      border-color: var(--brand-primary);
+    }
+    .btn--secondary:hover { background: var(--brand-primary); color: var(--brand-primary-fg); }
+    .btn--accent { background: var(--brand-accent); color: var(--brand-accent-fg); }
+    .btn--accent:hover { background: var(--brand-accent-hover); }
+    .btn--ghost { background: transparent; color: var(--text); }
+    .btn--ghost:hover { background: var(--surface-subtle); }
+    .btn--destructive { background: var(--error); color: #fff; }
+    .btn--destructive:hover { filter: brightness(0.92); }
+    .btn--sm { font-size: var(--text-sm); padding: var(--btn-pad-sm); }
+    .btn--md { font-size: var(--text-sm); padding: var(--btn-pad-md); }
+    .btn--lg { font-size: var(--text-base); padding: var(--btn-pad-lg); }
+    .btn--inverted-on-hero {
+      color: var(--brand-primary-fg);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    /* ─── DEPARTMENT CHIPS ─────────────────────────────────────────────────── */
+    .dept-strip {
+      display: flex; gap: 16px; overflow-x: auto;
+      padding: 8px 0; scrollbar-width: none;
+    }
+    .dept-strip::-webkit-scrollbar { display: none; }
+    .dept {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      flex: 0 0 auto; width: var(--chip-size); text-decoration: none; color: var(--text);
+    }
+    .dept__circle {
+      width: var(--chip-size);
+      height: var(--chip-size);
+      border-radius: var(--radius-chip);
+      background: var(--brand-accent-soft);
+      display: grid; place-items: center;
+      font-size: var(--chip-icon-size);
+      transition: transform var(--duration) ease;
+    }
+    .dept:hover .dept__circle { transform: scale(1.06); }
+    .dept__label {
+      font-size: var(--text-sm); font-weight: 500;
+      text-align: center; line-height: 1.25;
+    }
+
+    /* ─── PRODUCT CARDS ────────────────────────────────────────────────────── */
+    .product-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .pcard {
+      background: var(--surface-raised);
+      border: var(--card-border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      transition: box-shadow var(--duration) ease, transform var(--duration) ease;
+      display: flex; flex-direction: column;
+    }
+    .pcard:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: var(--card-hover-shift);
+    }
+    .pcard__image {
+      aspect-ratio: 1; background: var(--surface-subtle);
+      display: grid; place-items: center; font-size: 48px;
+      position: relative;
+    }
+    .pcard__badge {
+      position: absolute; top: 8px; left: 8px;
+      background: var(--brand-accent); color: var(--brand-accent-fg);
+      font-family: var(--font-body);
+      font-size: var(--text-xs); font-weight: 600;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: var(--radius-input);
+    }
+    .pcard__badge--nnc { background: var(--success); color: #fff; }
+    .pcard__body {
+      padding: var(--card-padding); display: flex; flex-direction: column; gap: 8px; flex: 1;
+    }
+    .pcard__title {
+      font-family: var(--font-body);
+      font-size: var(--text-base); font-weight: 500;
+      line-height: 1.35; color: var(--text);
+    }
+    .pcard__price {
+      font-family: var(--font-body);
+      font-size: var(--text-xl); font-weight: 700;
+      color: var(--text); margin-top: auto;
+    }
+    .pcard__price-sub {
+      font-size: var(--text-xs); color: var(--text-soft); font-weight: 400;
+    }
+    .pcard__add { margin-top: 8px; }
+
+    /* ─── PALETTE SWATCHES ─────────────────────────────────────────────────── */
+    .palette-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+    }
+    .swatch {
+      background: var(--surface-raised); border: 1px solid var(--border);
+      border-radius: var(--radius-card); overflow: hidden;
+    }
+    .swatch__color { height: 80px; }
+    .swatch__meta { padding: 12px; }
+    .swatch__name { font-size: var(--text-sm); font-weight: 600; color: var(--text); }
+    .swatch__hex {
+      font-size: var(--text-xs); color: var(--text-soft);
+      font-family: ui-monospace, 'Courier New', monospace;
+    }
+
+    /* ─── TYPE SCALE ───────────────────────────────────────────────────────── */
+    .type-row {
+      display: flex; align-items: baseline; gap: 24px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .type-row__label {
+      font-family: ui-monospace, 'Courier New', monospace;
+      font-size: var(--text-xs); font-weight: 600;
+      color: var(--text-soft);
+      width: 140px; flex-shrink: 0;
+    }
+    .type-row__sample { color: var(--text); }
+    .type-row__sample--heading {
+      font-family: var(--font-heading);
+      font-weight: var(--heading-weight);
+      letter-spacing: var(--heading-tracking);
+    }
+
+    /* ─── FORM ─────────────────────────────────────────────────────────────── */
+    .form-stack { display: flex; flex-direction: column; gap: 16px; max-width: 360px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: var(--text-sm); font-weight: 500; color: var(--text); }
+    .field input, .field select {
+      font-family: var(--font-body); font-size: var(--text-sm);
+      padding: 12px 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-input);
+      background: var(--surface-raised); color: var(--text);
+      transition: border-color var(--duration) ease, box-shadow var(--duration) ease;
+    }
+    .field input:focus, .field select:focus {
+      outline: none; border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 18%, transparent);
+    }
+
+    /* ─── ALERTS ───────────────────────────────────────────────────────────── */
+    .alerts { display: flex; flex-direction: column; gap: 12px; }
+    .alert {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius-card);
+      border: 1px solid;
+      font-size: var(--text-sm);
+      font-family: var(--font-body);
+    }
+    .alert__icon { font-size: 18px; line-height: 1; flex-shrink: 0; }
+    .alert--success { background: color-mix(in srgb, var(--success) 8%, var(--bg)); color: var(--success); border-color: color-mix(in srgb, var(--success) 35%, var(--bg)); }
+    .alert--warning { background: color-mix(in srgb, var(--warning) 10%, var(--bg)); color: var(--warning); border-color: color-mix(in srgb, var(--warning) 35%, var(--bg)); }
+    .alert--error   { background: color-mix(in srgb, var(--error) 8%, var(--bg)); color: var(--error); border-color: color-mix(in srgb, var(--error) 35%, var(--bg)); }
+    .alert--info    { background: color-mix(in srgb, var(--info) 8%, var(--bg)); color: var(--info); border-color: color-mix(in srgb, var(--info) 35%, var(--bg)); }
+
+    /* ─── FOOTER ───────────────────────────────────────────────────────────── */
+    .mock-footer {
+      background: var(--brand-primary); color: var(--brand-primary-fg);
+      padding: 64px 24px 32px;
+      transition: background var(--duration) ease;
+    }
+    .mock-footer__cols {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 32px; max-width: 1200px; margin: 0 auto;
+    }
+    .mock-footer h4 {
+      font-family: var(--font-body);
+      font-size: var(--text-sm); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 12px; opacity: 0.85;
+    }
+    .mock-footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+    .mock-footer a { color: inherit; text-decoration: none; opacity: 0.8; font-size: var(--text-sm); }
+    .mock-footer a:hover { opacity: 1; }
+    .mock-footer__brand {
+      font-family: var(--font-heading);
+      font-size: var(--text-2xl); font-weight: var(--heading-weight);
+      letter-spacing: var(--heading-tracking);
+      margin-bottom: 12px;
+    }
+    .mock-footer__bottom {
+      max-width: 1200px; margin: 32px auto 0;
+      padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.15);
+      font-size: var(--text-xs); opacity: 0.7;
+    }
+
+    /* ─── MOBILE ───────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .section { padding: calc(var(--section-py) * 0.65) 16px; }
+      .hero { padding: calc(var(--hero-py) * 0.6) 16px; }
+      .mock-nav { display: none; }
+      .notes__inner { grid-template-columns: 1fr; gap: 16px; }
+      .mock-footer__cols { grid-template-columns: 1fr 1fr; }
+      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .tab-bar { padding: 8px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="tab-bar" role="tablist" aria-label="Design direction">
+  <span class="tab-bar__label">Direction</span>
+  <button class="tab" role="tab" aria-selected="true"  data-direction="a">A · Approachable</button>
+  <button class="tab" role="tab" aria-selected="false" data-direction="b">B · Considered</button>
+  <button class="tab" role="tab" aria-selected="false" data-direction="c">C · Bold &amp; playful</button>
+</nav>
+
+<main class="preview direction-a" id="preview">
+
+  <!-- DESIGN NOTES (changes per direction) ───────────────────────────────── -->
+  <section class="notes">
+    <div class="notes__inner">
+      <div>
+        <h3 class="notes__title" data-notes="title"></h3>
+        <p class="notes__voice" data-notes="voice"></p>
+      </div>
+      <div class="notes__specs">
+        <div class="notes__spec"><strong>Headings</strong><span data-notes="heading-font"></span></div>
+        <div class="notes__spec"><strong>Body</strong><span data-notes="body-font"></span></div>
+        <div class="notes__spec"><strong>Button radius</strong><span data-notes="btn-radius"></span></div>
+        <div class="notes__spec"><strong>Card radius</strong><span data-notes="card-radius"></span></div>
+        <div class="notes__spec"><strong>Density</strong><span data-notes="density"></span></div>
+        <div class="notes__spec"><strong>Card style</strong><span data-notes="card-style"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HEADER ─────────────────────────────────────────────────────────────── -->
+  <header class="mock-header">
+    <img src="arctic-fresh-logo.png" alt="Arctic Fresh" class="mock-logo-img">
+    <nav class="mock-nav">
+      <a href="#">Shop</a>
+      <a href="#">Departments</a>
+      <a href="#">Weekly Sale</a>
+      <a href="#">Shipping</a>
+      <a href="#">About</a>
+    </nav>
+    <div class="mock-search">
+      <span>🔍</span>
+      <span>Search 9,000+ products…</span>
+    </div>
+    <div class="mock-icons">
+      <button class="icon-btn" aria-label="Account">👤</button>
+      <button class="icon-btn" aria-label="Cart">🛒</button>
+    </div>
+  </header>
+
+  <!-- HERO ───────────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <h1>Fresh groceries, delivered to the North.</h1>
+    <p>Order online from over 9,000 products. Nutrition North subsidies applied automatically — see your community pricing as you shop.</p>
+    <div class="hero__ctas">
+      <button class="btn btn--accent btn--lg">Shop now</button>
+      <button class="btn btn--ghost btn--lg btn--inverted-on-hero">Choose your community</button>
+    </div>
+  </section>
+
+  <!-- DEPARTMENT STRIP ───────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="container">
+      <p class="label-eyebrow">Shop by department</p>
+      <div class="dept-strip">
+        <a href="#" class="dept"><span class="dept__circle">🥩</span><span class="dept__label">Meat &amp; Seafood</span></a>
+        <a href="#" class="dept"><span class="dept__circle">🥬</span><span class="dept__label">Fruits &amp; Vegetables</span></a>
+        <a href="#" class="dept"><span class="dept__circle">🥛</span><span class="dept__label">Dairy &amp; Eggs</span></a>
+        <a href="#" class="dept"><span class="dept__circle">🥫</span><span class="dept__label">Pantry</span></a>
+        <a href="#" class="dept"><span class="dept__circle">🧊</span><span class="dept__label">Frozen Food</span></a>
+        <a href="#" class="dept"><span class="dept__circle">🥤</span><span class="dept__label">Drinks</span></a>
+        <a href="#" class="dept"><span class="dept__circle">🍼</span><span class="dept__label">Baby &amp; Kids</span></a>
+        <a href="#" class="dept"><span class="dept__circle">🏠</span><span class="dept__label">Home &amp; Lifestyle</span></a>
+        <a href="#" class="dept"><span class="dept__circle">💊</span><span class="dept__label">Health &amp; Beauty</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PRODUCTS ─────────────────────────────────────────────────── -->
+  <section class="section section--bg">
+    <div class="container">
+      <p class="label-eyebrow">This week's deals</p>
+      <h2 class="section-title">Featured products</h2>
+      <p class="section-sub">Real product names sampled from arcticfresh.ca.</p>
+
+      <div class="product-grid">
+        <div class="pcard">
+          <div class="pcard__image">🍓<span class="pcard__badge pcard__badge--nnc">NNC1</span></div>
+          <div class="pcard__body">
+            <h3 class="pcard__title">Kirkland Signature Frozen Whole Strawberries</h3>
+            <div class="pcard__price">$19.99 <span class="pcard__price-sub">/ 1.81 kg</span></div>
+            <button class="btn btn--primary btn--sm pcard__add">Add to cart</button>
+          </div>
+        </div>
+        <div class="pcard">
+          <div class="pcard__image">🥩<span class="pcard__badge">Sale</span></div>
+          <div class="pcard__body">
+            <h3 class="pcard__title">Hampton House Frozen Buffalo Chicken Strips, 2 Kg</h3>
+            <div class="pcard__price">$32.49 <span class="pcard__price-sub">/ 2 kg</span></div>
+            <button class="btn btn--primary btn--sm pcard__add">Add to cart</button>
+          </div>
+        </div>
+        <div class="pcard">
+          <div class="pcard__image">🧈<span class="pcard__badge pcard__badge--nnc">NNC1</span></div>
+          <div class="pcard__body">
+            <h3 class="pcard__title">Great Value Salted Butter, 454g</h3>
+            <div class="pcard__price">$6.79 <span class="pcard__price-sub">/ 454 g</span></div>
+            <button class="btn btn--primary btn--sm pcard__add">Add to cart</button>
+          </div>
+        </div>
+        <div class="pcard">
+          <div class="pcard__image">🥕</div>
+          <div class="pcard__body">
+            <h3 class="pcard__title">Organic Peeled Carrots 2-count</h3>
+            <div class="pcard__price">$8.49 <span class="pcard__price-sub">/ pack</span></div>
+            <button class="btn btn--primary btn--sm pcard__add">Add to cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PALETTE ─────────────────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="container">
+      <p class="label-eyebrow">Identity</p>
+      <h2 class="section-title">Color tokens</h2>
+      <p class="section-sub">Brand colors, semantic colors, and the neutral scale.</p>
+
+      <div class="palette-grid">
+        <div class="swatch"><div class="swatch__color" style="background: var(--brand-primary);"></div><div class="swatch__meta"><div class="swatch__name">Brand · primary</div><div class="swatch__hex">--brand-primary</div></div></div>
+        <div class="swatch"><div class="swatch__color" style="background: var(--brand-accent);"></div><div class="swatch__meta"><div class="swatch__name">Brand · accent</div><div class="swatch__hex">--brand-accent</div></div></div>
+        <div class="swatch"><div class="swatch__color" style="background: var(--brand-accent-soft);"></div><div class="swatch__meta"><div class="swatch__name">Accent · soft</div><div class="swatch__hex">--brand-accent-soft</div></div></div>
+        <div class="swatch"><div class="swatch__color" style="background: var(--success);"></div><div class="swatch__meta"><div class="swatch__name">Success</div><div class="swatch__hex">--success</div></div></div>
+        <div class="swatch"><div class="swatch__color" style="background: var(--warning);"></div><div class="swatch__meta"><div class="swatch__name">Warning</div><div class="swatch__hex">--warning</div></div></div>
+        <div class="swatch"><div class="swatch__color" style="background: var(--error);"></div><div class="swatch__meta"><div class="swatch__name">Error</div><div class="swatch__hex">--error</div></div></div>
+        <div class="swatch"><div class="swatch__color" style="background: var(--info);"></div><div class="swatch__meta"><div class="swatch__name">Info</div><div class="swatch__hex">--info</div></div></div>
+      </div>
+
+      <div style="margin-top: 32px;">
+        <p class="label-eyebrow">Neutral scale</p>
+        <div style="display: flex; border-radius: var(--radius-card); overflow: hidden; border: 1px solid var(--border);">
+          <div style="flex:1; background: var(--neutral-50); height: 56px;"></div>
+          <div style="flex:1; background: var(--neutral-100); height: 56px;"></div>
+          <div style="flex:1; background: var(--neutral-200); height: 56px;"></div>
+          <div style="flex:1; background: var(--neutral-300); height: 56px;"></div>
+          <div style="flex:1; background: var(--neutral-400); height: 56px;"></div>
+          <div style="flex:1; background: var(--neutral-500); height: 56px;"></div>
+          <div style="flex:1; background: var(--neutral-600); height: 56px;"></div>
+          <div style="flex:1; background: var(--neutral-700); height: 56px;"></div>
+          <div style="flex:1; background: var(--neutral-800); height: 56px;"></div>
+          <div style="flex:1; background: var(--neutral-900); height: 56px;"></div>
+        </div>
+        <p style="font-size: var(--text-xs); color: var(--text-soft); margin-top: 8px; font-family: ui-monospace, monospace;">--neutral-50 → --neutral-900</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPOGRAPHY ─────────────────────────────────────────────────────────── -->
+  <section class="section section--bg">
+    <div class="container">
+      <p class="label-eyebrow">Typography</p>
+      <h2 class="section-title">Scale &amp; family</h2>
+      <p class="section-sub">Heading samples render in <code style="font-family: ui-monospace, monospace; background: var(--surface-raised); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); font-size: 13px;" data-notes="heading-font-inline"></code>; body in <code style="font-family: ui-monospace, monospace; background: var(--surface-raised); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); font-size: 13px;" data-notes="body-font-inline"></code>.</p>
+
+      <div>
+        <div class="type-row"><span class="type-row__label">5xl heading</span><span class="type-row__sample type-row__sample--heading" style="font-size: var(--text-5xl);">Hero headline</span></div>
+        <div class="type-row"><span class="type-row__label">4xl heading</span><span class="type-row__sample type-row__sample--heading" style="font-size: var(--text-4xl);">Page title</span></div>
+        <div class="type-row"><span class="type-row__label">3xl heading</span><span class="type-row__sample type-row__sample--heading" style="font-size: var(--text-3xl);">Section heading</span></div>
+        <div class="type-row"><span class="type-row__label">2xl heading</span><span class="type-row__sample type-row__sample--heading" style="font-size: var(--text-2xl);">Subheading</span></div>
+        <div class="type-row"><span class="type-row__label">xl strong UI</span><span class="type-row__sample" style="font-size: var(--text-xl); font-weight: 600;">Card title / strong UI</span></div>
+        <div class="type-row"><span class="type-row__label">lg body</span><span class="type-row__sample" style="font-size: var(--text-lg);">Lead paragraph</span></div>
+        <div class="type-row"><span class="type-row__label">base body</span><span class="type-row__sample" style="font-size: var(--text-base);">Body text — the default for paragraphs and most UI.</span></div>
+        <div class="type-row"><span class="type-row__label">sm body</span><span class="type-row__sample" style="font-size: var(--text-sm);">Secondary text, labels, dense tables.</span></div>
+        <div class="type-row"><span class="type-row__label">xs body</span><span class="type-row__sample" style="font-size: var(--text-xs);">Badges, metadata, fine print.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUTTONS ─────────────────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="container">
+      <p class="label-eyebrow">Components</p>
+      <h2 class="section-title">Buttons</h2>
+      <p class="section-sub">Same buttons in three sizes — radius, padding, and weight all change per direction.</p>
+
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+          <span style="font-size: var(--text-sm); color: var(--text-soft); width: 80px;">Large</span>
+          <button class="btn btn--primary btn--lg">Add to cart</button>
+          <button class="btn btn--secondary btn--lg">Continue</button>
+          <button class="btn btn--accent btn--lg">Checkout</button>
+          <button class="btn btn--ghost btn--lg">Cancel</button>
+          <button class="btn btn--destructive btn--lg">Remove</button>
+        </div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+          <span style="font-size: var(--text-sm); color: var(--text-soft); width: 80px;">Medium</span>
+          <button class="btn btn--primary btn--md">Add to cart</button>
+          <button class="btn btn--secondary btn--md">Continue</button>
+          <button class="btn btn--accent btn--md">Checkout</button>
+          <button class="btn btn--ghost btn--md">Cancel</button>
+          <button class="btn btn--destructive btn--md">Remove</button>
+        </div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+          <span style="font-size: var(--text-sm); color: var(--text-soft); width: 80px;">Small</span>
+          <button class="btn btn--primary btn--sm">Add to cart</button>
+          <button class="btn btn--secondary btn--sm">Continue</button>
+          <button class="btn btn--accent btn--sm">Checkout</button>
+          <button class="btn btn--ghost btn--sm">Cancel</button>
+          <button class="btn btn--destructive btn--sm">Remove</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM + ALERTS ──────────────────────────────────────────────────────── -->
+  <section class="section section--bg">
+    <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px;">
+      <div>
+        <p class="label-eyebrow">Forms</p>
+        <h2 class="section-title">Inputs</h2>
+        <p class="section-sub">Click in to see the focus ring tinted from the brand primary.</p>
+
+        <form class="form-stack" onsubmit="event.preventDefault()">
+          <div class="field">
+            <label for="email-demo">Email address</label>
+            <input id="email-demo" type="email" placeholder="you@example.com">
+          </div>
+          <div class="field">
+            <label for="comm-demo">Delivery community</label>
+            <select id="comm-demo">
+              <option>Iqaluit</option>
+              <option>Pond Inlet</option>
+              <option>Rankin Inlet</option>
+              <option>Kuujjuaq</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="search-demo">Search products</label>
+            <input id="search-demo" type="search" placeholder="Frozen strawberries…">
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <p class="label-eyebrow">Feedback</p>
+        <h2 class="section-title">Alerts</h2>
+        <p class="section-sub">Semantic colors with tinted backgrounds.</p>
+
+        <div class="alerts">
+          <div class="alert alert--success"><span class="alert__icon">✓</span><span>Order placed. We'll send updates by email.</span></div>
+          <div class="alert alert--info"><span class="alert__icon">ⓘ</span><span>Pricing reflects Nutrition North subsidies for Iqaluit.</span></div>
+          <div class="alert alert--warning"><span class="alert__icon">⚠</span><span>Minimum order $95. Add $12.50 to qualify for shipping.</span></div>
+          <div class="alert alert--error"><span class="alert__icon">✕</span><span>Your community hasn't been selected. Pricing may be inaccurate.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER ─────────────────────────────────────────────────────────────── -->
+  <footer class="mock-footer">
+    <div class="mock-footer__cols">
+      <div>
+        <img src="arctic-fresh-logo.png" alt="Arctic Fresh" class="mock-footer__brand-img">
+        <p style="opacity: 0.85; font-size: var(--text-sm); max-width: 36ch;">Online grocery delivery to 15 communities across Nunavut, with Nutrition North subsidies applied at checkout.</p>
+      </div>
+      <div><h4>Shop</h4><ul><li><a href="#">All departments</a></li><li><a href="#">Weekly sale</a></li><li><a href="#">New arrivals</a></li><li><a href="#">Bulk &amp; family packs</a></li></ul></div>
+      <div><h4>Help</h4><ul><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="#">FAQ</a></li><li><a href="#">Contact</a></li></ul></div>
+      <div><h4>About</h4><ul><li><a href="#">Our story</a></li><li><a href="#">Communities served</a></li><li><a href="#">Nutrition North</a></li><li><a href="#">Careers</a></li></ul></div>
+    </div>
+    <div class="mock-footer__bottom">© Arctic Fresh · Inuit-operated · Delivering to 15 communities across Nunavut</div>
+  </footer>
+
+</main>
+
+<script>
+  const NOTES = {
+    a: {
+      title: 'Direction A · Logo-faithful',
+      voice: 'Closest to the actual brand identity. Mint surface, deep-forest text, coral (carrot) accent. Friendly, warm, illustrative — the wordmark fits naturally.',
+      'heading-font': 'Manrope 700',
+      'heading-font-inline': 'Manrope 700 (rounded geometric)',
+      'body-font': 'Manrope 400',
+      'body-font-inline': 'Manrope 400, 1.55 line-height',
+      'btn-radius': '6px',
+      'card-radius': '8px',
+      density: 'Comfortable · 64px sections',
+      'card-style': '1px border, shadow on hover'
+    },
+    b: {
+      title: 'Direction B · Refined',
+      voice: 'Same brand DNA, dressier sibling. Forest primary, mint reduced to accent. Heavier headings, tighter tracking, sharper radii. The friendly grocery, grown up.',
+      'heading-font': 'Inter 700',
+      'heading-font-inline': 'Inter 700, tight tracking (-0.025em)',
+      'body-font': 'Inter 400',
+      'body-font-inline': 'Inter 400, 1.5 line-height',
+      'btn-radius': '4px (sharp)',
+      'card-radius': '4px',
+      density: 'Tight · 56px sections',
+      'card-style': '1px border, no shadow'
+    },
+    c: {
+      title: 'Direction C · Bold & playful',
+      voice: 'Brand cranked up. Punchy mint + carrot coral lean into the duotone of the logo. Display headings, full-pill buttons, airy spacing — distinctive and conversion-forward.',
+      'heading-font': 'Sora 700 (display)',
+      'heading-font-inline': 'Sora 700 (geometric display sans)',
+      'body-font': 'Inter 400',
+      'body-font-inline': 'Inter 400, 1.55 line-height',
+      'btn-radius': '999px (full pill)',
+      'card-radius': '16px',
+      density: 'Airy · 96px sections',
+      'card-style': 'No border, soft shadow, lifts on hover'
+    }
+  };
+
+  const preview = document.getElementById('preview');
+  const tabs = document.querySelectorAll('.tab');
+
+  function applyDirection(dir) {
+    preview.classList.remove('direction-a', 'direction-b', 'direction-c');
+    preview.classList.add(`direction-${dir}`);
+    tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.direction === dir ? 'true' : 'false'));
+    const data = NOTES[dir];
+    document.querySelectorAll('[data-notes]').forEach(el => {
+      el.textContent = data[el.dataset.notes] || '';
+    });
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => applyDirection(tab.dataset.direction));
+  });
+
+  // Initialize
+  applyDirection('a');
+</script>
+
+</body>
+</html>

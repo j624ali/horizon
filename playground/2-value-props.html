@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arctic Fresh — Value Props Strip</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-dark-green: #00602d;
+      --color-light-green: #5adb97;
+      --color-coral: #ff8b69;
+      --color-cream: #f5f7f3;
+      --color-text: #232323;
+      --color-muted: #6b6b6b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: var(--color-text);
+      background: #fff;
+      line-height: 1.5;
+    }
+
+    .demo-label {
+      max-width: 1200px;
+      margin: 24px auto 0;
+      padding: 0 24px;
+      font-size: 12px;
+      color: var(--color-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .value-strip {
+      padding: 44px 24px;
+      background: #fff;
+      border-block: 1px solid rgba(0, 96, 45, 0.12);
+      margin-top: 16px;
+    }
+
+    .value-strip__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .value-prop {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      padding: 0 12px;
+    }
+
+    .value-prop__icon {
+      width: 40px;
+      height: 40px;
+      color: var(--color-dark-green);
+    }
+
+    .value-prop__icon svg {
+      width: 100%;
+      height: 100%;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .value-prop__title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-dark-green);
+    }
+
+    .value-prop__text {
+      margin: 0;
+      font-size: 13px;
+      color: var(--color-muted);
+      max-width: 240px;
+    }
+
+    @media (min-width: 640px) {
+      .value-strip__inner {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 36px 24px;
+      }
+    }
+
+    @media (min-width: 960px) {
+      .value-strip__inner {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <p class="demo-label">Demo 2 · Value props strip</p>
+
+  <section class="value-strip" aria-label="Why shop with Arctic Fresh">
+    <div class="value-strip__inner">
+      <div class="value-prop">
+        <span class="value-prop__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 4c-8 1-13 6-14 14"/>
+            <path d="M20 4c1 6-1 11-6 13-2 1-4 1-6 1"/>
+            <path d="M6 18l-2 2"/>
+          </svg>
+        </span>
+        <h3 class="value-prop__title">Inuit-Operated</h3>
+        <p class="value-prop__text">Owned and run from within the communities we serve.</p>
+      </div>
+
+      <div class="value-prop">
+        <span class="value-prop__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"/>
+            <polyline points="8 12 11 15 16 9"/>
+          </svg>
+        </span>
+        <h3 class="value-prop__title">NNC-Approved Pricing</h3>
+        <p class="value-prop__text">Federal subsidy applied directly to eligible items.</p>
+      </div>
+
+      <div class="value-prop">
+        <span class="value-prop__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+        </span>
+        <h3 class="value-prop__title">15 Nunavut Communities</h3>
+        <p class="value-prop__text">Regular delivery across the territory.</p>
+      </div>
+
+      <div class="value-prop">
+        <span class="value-prop__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8z"/>
+            <path d="M9 8V6a3 3 0 0 1 6 0v2"/>
+          </svg>
+        </span>
+        <h3 class="value-prop__title">$95 Minimum Order</h3>
+        <p class="value-prop__text">Keeps shipping efficient for the long haul north.</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

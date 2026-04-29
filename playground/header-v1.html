@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arctic Fresh — Header v1 (Playground)</title>
+<style>
+  /* ---------- Tokens (mirroring config/settings_data.json scheme-1) ---------- */
+  :root {
+    --af-primary: #00602d;
+    --af-primary-hover: #004d24;
+    --af-accent: #ff8b69;
+    --af-bg: #ffffff;
+    --af-fg: #232323;
+    --af-fg-muted: #6b6b6b;
+    --af-border: #e6e6e6;
+    --af-surface: #f7f7f5;
+    --af-radius: 8px;
+    --af-radius-sm: 4px;
+    --af-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    --af-font: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* ---------- Page chrome ---------- */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--af-font);
+    background: #1d1f24;
+    color: #e7e7e7;
+    min-height: 100vh;
+  }
+
+  .viewer {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 24px 80px;
+  }
+
+  .viewer__title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .viewer__subtitle {
+    font-size: 13px;
+    color: #9aa0aa;
+    margin: 0 0 20px;
+  }
+
+  .viewer__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #2c2f36;
+  }
+  .viewer__tabgroup {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 4px 10px 4px 4px;
+    border-radius: 999px;
+    background: #2a2d34;
+  }
+  .viewer__tabgroup-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9aa0aa;
+    padding: 0 8px 0 6px;
+  }
+  .tab {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: #d4d6db;
+    font: inherit;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab:hover { background: #353841; }
+  .tab[aria-pressed="true"] {
+    background: var(--af-primary);
+    color: #fff;
+  }
+
+  .frame {
+    background: #fff;
+    color: var(--af-fg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    margin: 0 auto;
+    transition: max-width 0.25s ease;
+  }
+  .frame--desktop { max-width: 1280px; }
+  .frame--mobile {
+    max-width: 390px;
+    border-radius: 28px;
+    border: 8px solid #111;
+  }
+
+  .frame__chrome {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: #f0f0ee;
+    border-bottom: 1px solid #dcdcd9;
+  }
+  .frame__dot {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: #d3d3d0;
+  }
+  .frame__url {
+    margin-left: 12px;
+    font-size: 12px;
+    color: #6b6b6b;
+    background: #fff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    flex: 1;
+    max-width: 320px;
+  }
+  .frame--mobile .frame__chrome { display: none; }
+
+  .frame__body {
+    background: #fff;
+    color: var(--af-fg);
+    height: 760px;
+    overflow: hidden;
+    position: relative;
+  }
+  .frame--mobile .frame__body { height: 800px; border-radius: 20px; }
+
+  /* Hide all states by default */
+  .state { display: none; height: 100%; overflow-y: auto; }
+  body[data-state="d-default"]      #s-d-default,
+  body[data-state="d-sticky"]       #s-d-sticky,
+  body[data-state="d-mega"]         #s-d-mega,
+  body[data-state="d-search"]       #s-d-search,
+  body[data-state="m-default"]      #s-m-default,
+  body[data-state="m-drawer"]       #s-m-drawer,
+  body[data-state="m-search"]       #s-m-search { display: block; }
+
+  /* Switch frame size based on state (desktop vs mobile) */
+  body[data-state^="m-"] .frame { max-width: 390px; border-radius: 28px; border: 8px solid #111; }
+  body[data-state^="m-"] .frame__chrome { display: none; }
+  body[data-state^="m-"] .frame__body { height: 800px; border-radius: 20px; }
+
+  /* ============================================================
+     HEADER STYLES (the actual demo)
+     ============================================================ */
+  .af { font-family: var(--af-font); color: var(--af-fg); }
+  .af a { color: inherit; text-decoration: none; }
+  .af button { font-family: inherit; }
+
+  /* Tier 1: announcement + utility */
+  .af-announcement {
+    background: var(--af-primary);
+    color: #fff;
+    font-size: 13px;
+    padding: 8px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .af-announcement__msg { display: flex; align-items: center; gap: 8px; }
+  .af-announcement__msg svg { flex-shrink: 0; opacity: 0.9; }
+  .af-announcement__util { display: flex; align-items: center; gap: 18px; }
+  .af-announcement__util a { font-size: 12px; opacity: 0.92; }
+  .af-announcement__util a:hover { opacity: 1; text-decoration: underline; }
+
+  .af-community {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 8px;
+    background: rgba(255,255,255,0.14);
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .af-community:hover { background: rgba(255,255,255,0.22); }
+  .af-community__pin { display: inline-flex; }
+  .af-community__name { font-weight: 500; }
+  .af-community__caret { opacity: 0.7; }
+
+  /* Tier 2: main bar */
+  .af-main {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 28px;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--af-border);
+    background: #fff;
+  }
+  .af-logo { display: inline-flex; align-items: center; }
+  .af-logo img { height: 32px; width: auto; display: block; }
+
+  .af-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--af-surface);
+    border: 1px solid var(--af-border);
+    border-radius: 999px;
+    padding: 10px 16px;
+    max-width: 620px;
+    margin: 0 auto;
+    width: 100%;
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .af-search:focus-within {
+    border-color: var(--af-primary);
+    box-shadow: 0 0 0 3px rgba(0, 96, 45, 0.12);
+    background: #fff;
+  }
+  .af-search input {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    outline: none;
+    font: inherit;
+    font-size: 14px;
+    color: var(--af-fg);
+  }
+  .af-search input::placeholder { color: var(--af-fg-muted); }
+
+  .af-actions { display: flex; align-items: center; gap: 4px; }
+  .af-iconbtn {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--af-fg);
+    position: relative;
+    transition: background 0.15s;
+  }
+  .af-iconbtn:hover { background: var(--af-surface); }
+  .af-iconbtn__label {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0 0 0 0);
+  }
+  .af-cart-badge {
+    position: absolute;
+    top: 4px; right: 4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--af-accent);
+    color: #fff;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  /* Tier 3: department nav */
+  .af-departments {
+    border-bottom: 1px solid var(--af-border);
+    background: #fff;
+  }
+  .af-departments__list {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 24px;
+    margin: 0;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .af-departments__list::-webkit-scrollbar { display: none; }
+  .af-departments__item { flex-shrink: 0; }
+  .af-dept-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--af-fg);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    background: transparent;
+    border-left: 0; border-right: 0; border-top: 0;
+    white-space: nowrap;
+  }
+  .af-dept-link:hover { color: var(--af-primary); }
+  .af-dept-link[aria-expanded="true"] {
+    color: var(--af-primary);
+    border-bottom-color: var(--af-primary);
+  }
+  .af-dept-link svg { transition: transform 0.15s; }
+  .af-dept-link[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+  /* Mega menu */
+  .af-mega {
+    position: absolute;
+    left: 0; right: 0;
+    top: var(--mega-top, 100%);
+    background: #fff;
+    border-bottom: 1px solid var(--af-border);
+    box-shadow: var(--af-shadow);
+    padding: 28px 24px;
+    z-index: 5;
+  }
+  .af-mega__inner {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 280px;
+    gap: 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .af-mega__col h3 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--af-fg-muted);
+    margin: 0 0 10px;
+  }
+  .af-mega__col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 6px;
+  }
+  .af-mega__col a {
+    font-size: 14px;
+    color: var(--af-fg);
+    padding: 4px 0;
+    display: block;
+  }
+  .af-mega__col a:hover { color: var(--af-primary); text-decoration: underline; }
+  .af-mega__feature {
+    background: var(--af-surface);
+    border-radius: var(--af-radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .af-mega__feature-img {
+    aspect-ratio: 16 / 11;
+    background: linear-gradient(135deg, #cce5d2, #fff5f2);
+    background-size: cover;
+    background-position: center;
+  }
+  .af-mega__feature-body { padding: 14px; }
+  .af-mega__feature-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--af-accent);
+    margin: 0 0 4px;
+  }
+  .af-mega__feature h4 {
+    font-size: 15px;
+    margin: 0 0 4px;
+    font-weight: 600;
+  }
+  .af-mega__feature p {
+    font-size: 13px;
+    color: var(--af-fg-muted);
+    margin: 0 0 10px;
+    line-height: 1.45;
+  }
+  .af-mega__feature-cta {
+    font-size: 13px;
+    color: var(--af-primary);
+    font-weight: 500;
+  }
+
+  /* Search overlay (desktop) */
+  .af-search-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 22, 18, 0.45);
+    z-index: 20;
+    padding-top: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .af-search-overlay__panel {
+    width: min(720px, 92%);
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+    overflow: hidden;
+  }
+  .af-search-overlay__input {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--af-border);
+  }
+  .af-search-overlay__input input {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    outline: none;
+    font-size: 16px;
+    color: var(--af-fg);
+  }
+  .af-search-overlay__close {
+    appearance: none;
+    background: var(--af-surface);
+    border: 0;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--af-fg-muted);
+  }
+  .af-search-overlay__results { padding: 14px 20px 20px; }
+  .af-search-overlay__group { margin-bottom: 14px; }
+  .af-search-overlay__group h4 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--af-fg-muted);
+    margin: 0 0 8px;
+  }
+  .af-search-overlay__suggestion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 6px;
+    border-radius: var(--af-radius-sm);
+    cursor: pointer;
+  }
+  .af-search-overlay__suggestion:hover { background: var(--af-surface); }
+  .af-search-overlay__suggestion-icon {
+    width: 32px; height: 32px;
+    background: var(--af-surface);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--af-fg-muted);
+  }
+  .af-search-overlay__suggestion-text {
+    flex: 1;
+    font-size: 14px;
+  }
+  .af-search-overlay__suggestion-text small {
+    color: var(--af-fg-muted);
+    margin-left: 6px;
+  }
+  .af-search-overlay__product {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 6px;
+    border-radius: var(--af-radius-sm);
+    cursor: pointer;
+  }
+  .af-search-overlay__product:hover { background: var(--af-surface); }
+  .af-search-overlay__product-img {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, #cce5d2, #b3dab9);
+    border-radius: var(--af-radius-sm);
+  }
+  .af-search-overlay__product-info { flex: 1; }
+  .af-search-overlay__product-info strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .af-search-overlay__product-info span {
+    font-size: 13px;
+    color: var(--af-primary);
+    font-weight: 600;
+  }
+
+  /* Sticky collapsed (desktop) — same .af-main but slimmer */
+  .af-sticky {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    border-bottom: 1px solid var(--af-border);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    z-index: 10;
+  }
+  .af-sticky .af-main {
+    padding: 10px 24px;
+    border: 0;
+  }
+  .af-sticky .af-logo img { height: 26px; }
+  .af-sticky .af-search { padding: 8px 14px; }
+
+  /* Faux content under sticky to demonstrate scroll context */
+  .af-fauxcontent {
+    padding: 32px 24px 80px;
+    color: var(--af-fg);
+  }
+  .af-fauxcontent h1 {
+    font-size: 32px;
+    margin: 0 0 8px;
+    font-weight: 700;
+    color: var(--af-primary);
+  }
+  .af-fauxcontent p {
+    font-size: 15px;
+    color: var(--af-fg-muted);
+    line-height: 1.6;
+    max-width: 640px;
+    margin: 0 0 16px;
+  }
+  .af-fauxgrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .af-fauxcard {
+    aspect-ratio: 1;
+    background: var(--af-surface);
+    border-radius: var(--af-radius);
+    display: flex;
+    align-items: end;
+    padding: 14px;
+    font-size: 13px;
+    color: var(--af-fg-muted);
+  }
+
+  /* ============================================================
+     MOBILE
+     ============================================================ */
+  .af-m-announcement {
+    background: var(--af-primary);
+    color: #fff;
+    font-size: 12px;
+    padding: 7px 14px;
+    text-align: center;
+  }
+  .af-m-main {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--af-border);
+    background: #fff;
+  }
+  .af-m-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .af-m-logo img { height: 26px; width: auto; }
+
+  .af-m-search-row {
+    padding: 8px 12px 12px;
+    background: #fff;
+    border-bottom: 1px solid var(--af-border);
+  }
+  .af-m-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--af-surface);
+    border: 1px solid var(--af-border);
+    border-radius: 999px;
+    font-size: 14px;
+    color: var(--af-fg-muted);
+  }
+
+  .af-m-community {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--af-surface);
+    border-bottom: 1px solid var(--af-border);
+    font-size: 13px;
+  }
+  .af-m-community__left { display: flex; align-items: center; gap: 8px; color: var(--af-fg); }
+  .af-m-community__change {
+    color: var(--af-primary);
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .af-m-content {
+    padding: 18px 16px 100px;
+  }
+  .af-m-content h1 {
+    font-size: 22px;
+    margin: 0 0 8px;
+    font-weight: 700;
+    color: var(--af-primary);
+  }
+  .af-m-content p {
+    font-size: 14px;
+    color: var(--af-fg-muted);
+    line-height: 1.6;
+    margin: 0 0 12px;
+  }
+  .af-m-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .af-m-card {
+    aspect-ratio: 1;
+    background: var(--af-surface);
+    border-radius: var(--af-radius);
+    display: flex;
+    align-items: end;
+    padding: 12px;
+    font-size: 13px;
+    color: var(--af-fg-muted);
+  }
+
+  /* Drawer */
+  .af-drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 22, 18, 0.45);
+    z-index: 25;
+  }
+  .af-drawer {
+    position: absolute;
+    inset: 0 60px 0 0;
+    background: #fff;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
+  }
+  .af-drawer__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--af-border);
+  }
+  .af-drawer__head img { height: 24px; }
+  .af-drawer__community {
+    margin: 12px 14px;
+    padding: 10px 12px;
+    background: var(--af-surface);
+    border: 1px solid var(--af-border);
+    border-radius: var(--af-radius);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .af-drawer__community-name { font-weight: 600; flex: 1; }
+  .af-drawer__community-change {
+    color: var(--af-primary);
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .af-drawer__nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+  .af-drawer__group {
+    border-bottom: 1px solid var(--af-border);
+  }
+  .af-drawer__group-trigger {
+    width: 100%;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 14px 16px;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--af-fg);
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .af-drawer__group-trigger svg { color: var(--af-fg-muted); transition: transform 0.15s; }
+  .af-drawer__group--open .af-drawer__group-trigger svg { transform: rotate(180deg); color: var(--af-primary); }
+  .af-drawer__group--open .af-drawer__group-trigger { color: var(--af-primary); }
+  .af-drawer__sub {
+    list-style: none;
+    padding: 0 0 8px;
+    margin: 0;
+    display: none;
+    background: var(--af-surface);
+  }
+  .af-drawer__group--open .af-drawer__sub { display: block; }
+  .af-drawer__sub a {
+    display: block;
+    padding: 10px 16px 10px 32px;
+    font-size: 14px;
+    color: var(--af-fg);
+  }
+  .af-drawer__sub a:hover { background: rgba(0, 96, 45, 0.06); }
+  .af-drawer__foot {
+    padding: 14px 16px;
+    border-top: 1px solid var(--af-border);
+    display: grid;
+    gap: 10px;
+    font-size: 14px;
+  }
+  .af-drawer__foot a { color: var(--af-fg); display: flex; align-items: center; gap: 10px; }
+  .af-drawer__close {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    color: var(--af-fg);
+    cursor: pointer;
+  }
+  .af-drawer__close:hover { background: var(--af-surface); }
+
+  /* Mobile search full-screen */
+  .af-m-search-full {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 35;
+    display: flex;
+    flex-direction: column;
+  }
+  .af-m-search-full__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--af-border);
+  }
+  .af-m-search-full__back {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--af-fg);
+  }
+  .af-m-search-full__field {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--af-surface);
+    border: 1px solid var(--af-border);
+    border-radius: 999px;
+    padding: 8px 14px;
+  }
+  .af-m-search-full__field input {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+  }
+  .af-m-search-full__results { flex: 1; overflow-y: auto; padding: 14px; }
+  .af-m-search-full__group { margin-bottom: 18px; }
+  .af-m-search-full__group h4 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--af-fg-muted);
+    margin: 0 0 8px;
+  }
+  .af-m-search-full__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 4px;
+    cursor: pointer;
+  }
+  .af-m-search-full__row:hover { background: var(--af-surface); border-radius: var(--af-radius-sm); }
+  .af-m-search-full__row-icon {
+    width: 36px; height: 36px;
+    background: var(--af-surface);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--af-fg-muted);
+  }
+  .af-m-search-full__product-img {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, #cce5d2, #b3dab9);
+    border-radius: var(--af-radius-sm);
+    flex-shrink: 0;
+  }
+
+  /* Caption strip */
+  .caption {
+    margin: 16px auto 0;
+    max-width: 1280px;
+    font-size: 12px;
+    color: #9aa0aa;
+    padding: 0 4px;
+    line-height: 1.5;
+  }
+  .caption strong { color: #d4d6db; }
+</style>
+</head>
+<body data-state="d-default">
+
+<div class="viewer">
+  <h1 class="viewer__title">Arctic Fresh — Header v1</h1>
+  <p class="viewer__subtitle">Static prototype. Click a state to switch. Sticky state — scroll inside the frame to see it collapse.</p>
+
+  <div class="viewer__tabs" role="tablist">
+    <div class="viewer__tabgroup">
+      <span class="viewer__tabgroup-label">Desktop</span>
+      <button class="tab" data-target="d-default" aria-pressed="true">Default (3-tier)</button>
+      <button class="tab" data-target="d-sticky" aria-pressed="false">Sticky collapsed</button>
+      <button class="tab" data-target="d-mega" aria-pressed="false">Mega menu open</button>
+      <button class="tab" data-target="d-search" aria-pressed="false">Search overlay</button>
+    </div>
+    <div class="viewer__tabgroup">
+      <span class="viewer__tabgroup-label">Mobile</span>
+      <button class="tab" data-target="m-default" aria-pressed="false">Default (2-tier)</button>
+      <button class="tab" data-target="m-drawer" aria-pressed="false">Drawer open</button>
+      <button class="tab" data-target="m-search" aria-pressed="false">Search</button>
+    </div>
+  </div>
+
+  <div class="frame frame--desktop">
+    <div class="frame__chrome">
+      <span class="frame__dot"></span>
+      <span class="frame__dot"></span>
+      <span class="frame__dot"></span>
+      <span class="frame__url">arcticfresh.ca</span>
+    </div>
+    <div class="frame__body">
+
+      <!-- ============= DESKTOP: DEFAULT ============= -->
+      <div class="state af" id="s-d-default">
+        <div class="af-announcement">
+          <div class="af-announcement__msg">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+            Free shipping on orders over $250 — NNC eligibility shown at checkout
+          </div>
+          <div class="af-announcement__util">
+            <button class="af-community" type="button" aria-label="Change delivery community">
+              <span class="af-community__pin">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </span>
+              Delivering to <span class="af-community__name">Iqaluit</span>
+              <span class="af-community__caret">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <a href="#">Track order</a>
+            <a href="#">Help</a>
+            <a href="#">Sign in</a>
+          </div>
+        </div>
+
+        <div class="af-main">
+          <a href="#" class="af-logo" aria-label="Arctic Fresh — Home">
+            <img src="arctic-fresh-logo.png" alt="Arctic Fresh">
+          </a>
+          <div class="af-search" role="search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" placeholder="Search 9,000+ products — try 'arctic char' or 'baby formula'" aria-label="Search products">
+          </div>
+          <div class="af-actions">
+            <button class="af-iconbtn" aria-label="Account">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </button>
+            <button class="af-iconbtn" aria-label="Wishlist">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            </button>
+            <button class="af-iconbtn" aria-label="Cart, 3 items">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+              <span class="af-cart-badge">3</span>
+            </button>
+          </div>
+        </div>
+
+        <nav class="af-departments" aria-label="Departments">
+          <ul class="af-departments__list">
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Meat & Seafood <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Fruits & Vegetables <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Dairy & Eggs <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Pantry <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Frozen Food <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Drinks <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Baby & Kids <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Home & Lifestyle <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Health & Beauty <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></li>
+          </ul>
+        </nav>
+
+        <div class="af-fauxcontent">
+          <h1>Fresh, fairly delivered.</h1>
+          <p>From southern farms to your door in Iqaluit. NNC subsidies applied where eligible — no surprise costs at checkout.</p>
+          <div class="af-fauxgrid">
+            <div class="af-fauxcard">Featured department</div>
+            <div class="af-fauxcard">Featured department</div>
+            <div class="af-fauxcard">Featured department</div>
+            <div class="af-fauxcard">Featured department</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============= DESKTOP: STICKY ============= -->
+      <div class="state af" id="s-d-sticky">
+        <div style="height: 200px; background: linear-gradient(180deg, #fff5f2, #fff); display: flex; align-items: center; justify-content: center; color: var(--af-fg-muted); font-size: 13px; border-bottom: 1px solid var(--af-border);">
+          (above-the-fold content has scrolled out of view)
+        </div>
+
+        <div class="af-sticky">
+          <div class="af-main">
+            <a href="#" class="af-logo" aria-label="Arctic Fresh — Home">
+              <img src="arctic-fresh-logo.png" alt="Arctic Fresh">
+            </a>
+            <div class="af-search" role="search">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" placeholder="Search products" aria-label="Search products">
+            </div>
+            <div class="af-actions">
+              <button class="af-iconbtn" aria-label="Account">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </button>
+              <button class="af-iconbtn" aria-label="Cart, 3 items">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                <span class="af-cart-badge">3</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="af-fauxcontent">
+          <h1>Frozen Food</h1>
+          <p>247 products in this department. The slim sticky bar (logo + search + cart) keeps brand and access to cart visible while announcement and departments scroll away.</p>
+          <div class="af-fauxgrid">
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+            <div class="af-fauxcard">Product card</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============= DESKTOP: MEGA MENU OPEN ============= -->
+      <div class="state af" id="s-d-mega" style="position: relative;">
+        <div class="af-announcement">
+          <div class="af-announcement__msg">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+            Free shipping on orders over $250 — NNC eligibility shown at checkout
+          </div>
+          <div class="af-announcement__util">
+            <button class="af-community" type="button" aria-label="Change delivery community">
+              <span class="af-community__pin">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </span>
+              Delivering to <span class="af-community__name">Iqaluit</span>
+              <span class="af-community__caret">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <a href="#">Track order</a>
+            <a href="#">Help</a>
+            <a href="#">Sign in</a>
+          </div>
+        </div>
+
+        <div class="af-main">
+          <a href="#" class="af-logo">
+            <img src="arctic-fresh-logo.png" alt="Arctic Fresh">
+          </a>
+          <div class="af-search" role="search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" placeholder="Search 9,000+ products" aria-label="Search products">
+          </div>
+          <div class="af-actions">
+            <button class="af-iconbtn" aria-label="Account"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+            <button class="af-iconbtn" aria-label="Wishlist"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+            <button class="af-iconbtn" aria-label="Cart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span class="af-cart-badge">3</span></button>
+          </div>
+        </div>
+
+        <nav class="af-departments" aria-label="Departments">
+          <ul class="af-departments__list">
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Meat & Seafood</button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Fruits & Vegetables</button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Dairy & Eggs</button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="true">Frozen Food <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Pantry</button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Drinks</button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Baby & Kids</button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Home & Lifestyle</button></li>
+            <li class="af-departments__item"><button class="af-dept-link" type="button" aria-expanded="false">Health & Beauty</button></li>
+          </ul>
+        </nav>
+
+        <div class="af-mega" role="region" aria-label="Frozen Food submenu">
+          <div class="af-mega__inner">
+            <div class="af-mega__col">
+              <h3>Frozen Meals</h3>
+              <ul>
+                <li><a href="#">Pizza</a></li>
+                <li><a href="#">Entrées</a></li>
+                <li><a href="#">Family meals</a></li>
+                <li><a href="#">Single-serve</a></li>
+                <li><a href="#">Breakfast</a></li>
+              </ul>
+            </div>
+            <div class="af-mega__col">
+              <h3>Frozen Meat & Fish</h3>
+              <ul>
+                <li><a href="#">Chicken</a></li>
+                <li><a href="#">Beef</a></li>
+                <li><a href="#">Pork</a></li>
+                <li><a href="#">Fish & seafood</a></li>
+                <li><a href="#">Arctic char</a></li>
+              </ul>
+            </div>
+            <div class="af-mega__col">
+              <h3>Frozen Produce</h3>
+              <ul>
+                <li><a href="#">Vegetables</a></li>
+                <li><a href="#">Fruit & berries</a></li>
+                <li><a href="#">Stir-fry mixes</a></li>
+                <li><a href="#">Smoothie blends</a></li>
+              </ul>
+            </div>
+            <div class="af-mega__col">
+              <h3>Treats & Sides</h3>
+              <ul>
+                <li><a href="#">Ice cream</a></li>
+                <li><a href="#">Frozen desserts</a></li>
+                <li><a href="#">Fries & potatoes</a></li>
+                <li><a href="#">Bakery</a></li>
+                <li><a href="#" style="color: var(--af-primary); font-weight: 600;">Shop all frozen →</a></li>
+              </ul>
+            </div>
+            <div class="af-mega__feature">
+              <div class="af-mega__feature-img" style="background: linear-gradient(135deg, #b3dab9, #00602d);"></div>
+              <div class="af-mega__feature-body">
+                <p class="af-mega__feature-eyebrow">NNC1 — most subsidized</p>
+                <h4>Country food, fairly priced</h4>
+                <p>Arctic char, caribou, and traditional staples — eligible for the highest NNC subsidy.</p>
+                <a href="#" class="af-mega__feature-cta">Browse country food →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="af-fauxcontent" style="opacity: 0.4;">
+          <h1>Fresh, fairly delivered.</h1>
+          <p>From southern farms to your door in Iqaluit.</p>
+        </div>
+      </div>
+
+      <!-- ============= DESKTOP: SEARCH OVERLAY ============= -->
+      <div class="state af" id="s-d-search" style="position: relative;">
+        <div class="af-announcement">
+          <div class="af-announcement__msg">Free shipping on orders over $250 — NNC eligibility shown at checkout</div>
+          <div class="af-announcement__util">
+            <button class="af-community" type="button">
+              <span class="af-community__pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+              Delivering to <span class="af-community__name">Iqaluit</span>
+            </button>
+            <a href="#">Sign in</a>
+          </div>
+        </div>
+        <div class="af-main">
+          <a href="#" class="af-logo"><img src="arctic-fresh-logo.png" alt="Arctic Fresh"></a>
+          <div class="af-search" role="search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" placeholder="Search products">
+          </div>
+          <div class="af-actions">
+            <button class="af-iconbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+            <button class="af-iconbtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span class="af-cart-badge">3</span></button>
+          </div>
+        </div>
+
+        <div class="af-search-overlay" role="dialog" aria-label="Search">
+          <div class="af-search-overlay__panel">
+            <div class="af-search-overlay__input">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" placeholder="Search 9,000+ products" value="char" autofocus aria-label="Search">
+              <button class="af-search-overlay__close" aria-label="Close search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            </div>
+            <div class="af-search-overlay__results">
+              <div class="af-search-overlay__group">
+                <h4>Suggestions</h4>
+                <div class="af-search-overlay__suggestion">
+                  <span class="af-search-overlay__suggestion-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                  <span class="af-search-overlay__suggestion-text">arctic <strong>char</strong> <small>in Meat & Seafood</small></span>
+                </div>
+                <div class="af-search-overlay__suggestion">
+                  <span class="af-search-overlay__suggestion-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                  <span class="af-search-overlay__suggestion-text">smoked <strong>char</strong> fillet</span>
+                </div>
+                <div class="af-search-overlay__suggestion">
+                  <span class="af-search-overlay__suggestion-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                  <span class="af-search-overlay__suggestion-text"><strong>char</strong>coal</span>
+                </div>
+              </div>
+              <div class="af-search-overlay__group">
+                <h4>Products</h4>
+                <div class="af-search-overlay__product">
+                  <span class="af-search-overlay__product-img"></span>
+                  <span class="af-search-overlay__product-info">
+                    <strong>Arctic Char Fillet, frozen — 1lb</strong>
+                    <span>$24.99 <small style="color: var(--af-fg-muted); font-weight: 400; margin-left: 4px;">NNC1 eligible</small></span>
+                  </span>
+                </div>
+                <div class="af-search-overlay__product">
+                  <span class="af-search-overlay__product-img" style="background: linear-gradient(135deg, #fff5f2, #ff8b69);"></span>
+                  <span class="af-search-overlay__product-info">
+                    <strong>Smoked Arctic Char — 8oz</strong>
+                    <span>$18.49</span>
+                  </span>
+                </div>
+                <div class="af-search-overlay__product">
+                  <span class="af-search-overlay__product-img"></span>
+                  <span class="af-search-overlay__product-info">
+                    <strong>Whole Arctic Char, fresh — 2-3lb</strong>
+                    <span>$42.00</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="af-fauxcontent" style="opacity: 0.4;">
+          <h1>Fresh, fairly delivered.</h1>
+        </div>
+      </div>
+
+      <!-- ============= MOBILE: DEFAULT ============= -->
+      <div class="state af" id="s-m-default">
+        <div class="af-m-announcement">Free shipping on orders over $250</div>
+        <div class="af-m-main">
+          <button class="af-iconbtn" aria-label="Open menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <a href="#" class="af-m-logo" aria-label="Arctic Fresh"><img src="arctic-fresh-logo.png" alt="Arctic Fresh"></a>
+          <button class="af-iconbtn" aria-label="Cart, 3 items" style="position: relative;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+            <span class="af-cart-badge">3</span>
+          </button>
+        </div>
+        <div class="af-m-search-row">
+          <div class="af-m-search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search products…</span>
+          </div>
+        </div>
+        <div class="af-m-community">
+          <div class="af-m-community__left">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Delivering to <strong>Iqaluit</strong>
+          </div>
+          <button class="af-m-community__change">Change</button>
+        </div>
+        <div class="af-m-content">
+          <h1>Fresh, fairly delivered.</h1>
+          <p>From southern farms to your door. NNC subsidies applied where eligible.</p>
+          <div class="af-m-grid">
+            <div class="af-m-card">Department</div>
+            <div class="af-m-card">Department</div>
+            <div class="af-m-card">Department</div>
+            <div class="af-m-card">Department</div>
+            <div class="af-m-card">Department</div>
+            <div class="af-m-card">Department</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============= MOBILE: DRAWER OPEN ============= -->
+      <div class="state af" id="s-m-drawer" style="position: relative;">
+        <div class="af-m-announcement">Free shipping on orders over $250</div>
+        <div class="af-m-main">
+          <button class="af-iconbtn" aria-label="Close menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <a href="#" class="af-m-logo"><img src="arctic-fresh-logo.png" alt="Arctic Fresh"></a>
+          <button class="af-iconbtn" style="position: relative;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span class="af-cart-badge">3</span></button>
+        </div>
+        <div class="af-m-search-row">
+          <div class="af-m-search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search products…</span>
+          </div>
+        </div>
+        <div class="af-m-content">
+          <h1>Fresh, fairly delivered.</h1>
+        </div>
+
+        <div class="af-drawer-backdrop" aria-hidden="true"></div>
+        <aside class="af-drawer" role="dialog" aria-label="Main navigation">
+          <div class="af-drawer__head">
+            <img src="arctic-fresh-logo.png" alt="Arctic Fresh">
+            <button class="af-drawer__close" aria-label="Close menu">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="af-drawer__community">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--af-primary);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="af-drawer__community-name">Iqaluit</span>
+            <button class="af-drawer__community-change">Change</button>
+          </div>
+          <nav class="af-drawer__nav" aria-label="Departments">
+            <div class="af-drawer__group">
+              <button class="af-drawer__group-trigger" aria-expanded="false" type="button">
+                Meat & Seafood
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <div class="af-drawer__group">
+              <button class="af-drawer__group-trigger" aria-expanded="false" type="button">
+                Fruits & Vegetables
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <div class="af-drawer__group">
+              <button class="af-drawer__group-trigger" aria-expanded="false" type="button">
+                Dairy & Eggs
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <div class="af-drawer__group af-drawer__group--open">
+              <button class="af-drawer__group-trigger" aria-expanded="true" type="button">
+                Frozen Food
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <ul class="af-drawer__sub">
+                <li><a href="#">Frozen meals</a></li>
+                <li><a href="#">Frozen meat & fish</a></li>
+                <li><a href="#">Frozen produce</a></li>
+                <li><a href="#">Ice cream & treats</a></li>
+                <li><a href="#" style="color: var(--af-primary); font-weight: 600;">Shop all frozen →</a></li>
+              </ul>
+            </div>
+            <div class="af-drawer__group">
+              <button class="af-drawer__group-trigger" aria-expanded="false" type="button">
+                Pantry
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <div class="af-drawer__group">
+              <button class="af-drawer__group-trigger" aria-expanded="false" type="button">
+                Drinks
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <div class="af-drawer__group">
+              <button class="af-drawer__group-trigger" aria-expanded="false" type="button">
+                Baby & Kids
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <div class="af-drawer__group">
+              <button class="af-drawer__group-trigger" aria-expanded="false" type="button">
+                Home & Lifestyle
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+            <div class="af-drawer__group">
+              <button class="af-drawer__group-trigger" aria-expanded="false" type="button">
+                Health & Beauty
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+          </nav>
+          <div class="af-drawer__foot">
+            <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Sign in</a>
+            <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1.5 13a2 2 0 01-2 2h-7a2 2 0 01-2-2L5 6"/></svg> Track order</a>
+            <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12" y2="17"/></svg> Help</a>
+          </div>
+        </aside>
+      </div>
+
+      <!-- ============= MOBILE: SEARCH ============= -->
+      <div class="state af" id="s-m-search" style="position: relative;">
+        <div class="af-m-search-full">
+          <div class="af-m-search-full__head">
+            <button class="af-m-search-full__back" aria-label="Back">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="af-m-search-full__field">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" placeholder="Search products" value="char" aria-label="Search">
+            </div>
+          </div>
+          <div class="af-m-search-full__results">
+            <div class="af-m-search-full__group">
+              <h4>Suggestions</h4>
+              <div class="af-m-search-full__row">
+                <span class="af-m-search-full__row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                <span style="font-size: 14px;">arctic <strong>char</strong></span>
+              </div>
+              <div class="af-m-search-full__row">
+                <span class="af-m-search-full__row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                <span style="font-size: 14px;">smoked <strong>char</strong> fillet</span>
+              </div>
+              <div class="af-m-search-full__row">
+                <span class="af-m-search-full__row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                <span style="font-size: 14px;"><strong>char</strong>coal</span>
+              </div>
+            </div>
+            <div class="af-m-search-full__group">
+              <h4>Products</h4>
+              <div class="af-m-search-full__row">
+                <span class="af-m-search-full__product-img"></span>
+                <div style="flex: 1;">
+                  <strong style="display: block; font-size: 14px; font-weight: 500;">Arctic Char Fillet, 1lb</strong>
+                  <span style="font-size: 13px; color: var(--af-primary); font-weight: 600;">$24.99</span>
+                  <span style="font-size: 11px; color: var(--af-fg-muted); margin-left: 6px;">NNC1</span>
+                </div>
+              </div>
+              <div class="af-m-search-full__row">
+                <span class="af-m-search-full__product-img" style="background: linear-gradient(135deg, #fff5f2, #ff8b69);"></span>
+                <div style="flex: 1;">
+                  <strong style="display: block; font-size: 14px; font-weight: 500;">Smoked Char, 8oz</strong>
+                  <span style="font-size: 13px; color: var(--af-primary); font-weight: 600;">$18.49</span>
+                </div>
+              </div>
+              <div class="af-m-search-full__row">
+                <span class="af-m-search-full__product-img"></span>
+                <div style="flex: 1;">
+                  <strong style="display: block; font-size: 14px; font-weight: 500;">Whole Arctic Char, 2-3lb</strong>
+                  <span style="font-size: 13px; color: var(--af-primary); font-weight: 600;">$42.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="caption">
+    <strong>States:</strong> 1) Desktop default — 3-tier (announcement + main + departments).
+    2) Sticky collapsed — slim main bar only, ~56px, via <code>position: sticky</code>.
+    3) Mega menu — 4 columns of subcategories + 1 feature panel (NNC1 country food).
+    4) Search overlay — modal with predictive suggestions + product hits.
+    5) Mobile default — 2-tier with search bar + community pill.
+    6) Drawer open — slide-in from left, accordion departments, community at top.
+    7) Mobile search — full-screen overlay.
+  </p>
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('aria-pressed', 'false'));
+      tab.setAttribute('aria-pressed', 'true');
+      document.body.setAttribute('data-state', tab.dataset.target);
+      document.querySelectorAll('.state').forEach(s => s.scrollTop = 0);
+    });
+  });
+</script>
+</body>
+</html>
