@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arctic Fresh — Header v2 (Mobile rail variant)</title>
+<style>
+  :root {
+    --af-primary: #00602d;
+    --af-accent: #ff8b69;
+    --af-fg: #232323;
+    --af-fg-muted: #6b6b6b;
+    --af-border: #e6e6e6;
+    --af-surface: #f7f7f5;
+    --af-radius: 8px;
+    --af-font: 'Poppins', system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--af-font);
+    background: #1d1f24;
+    color: #e7e7e7;
+    min-height: 100vh;
+  }
+
+  .viewer { max-width: 1100px; margin: 0 auto; padding: 24px 24px 80px; }
+  .viewer__title { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+  .viewer__subtitle { font-size: 13px; color: #9aa0aa; margin: 0 0 20px; }
+
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .compare__col h3 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #9aa0aa;
+    margin: 0 0 10px;
+  }
+
+  .frame {
+    background: #fff;
+    color: var(--af-fg);
+    max-width: 390px;
+    border-radius: 28px;
+    border: 8px solid #111;
+    overflow: hidden;
+    margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+  .frame__body {
+    height: 720px;
+    overflow-y: auto;
+    border-radius: 20px;
+    background: #fff;
+  }
+
+  .af { font-family: var(--af-font); color: var(--af-fg); }
+  .af a { color: inherit; text-decoration: none; }
+
+  .af-m-announcement {
+    background: var(--af-primary);
+    color: #fff;
+    font-size: 12px;
+    padding: 7px 14px;
+    text-align: center;
+  }
+  .af-m-main {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--af-border);
+    background: #fff;
+  }
+  .af-iconbtn {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--af-fg);
+    position: relative;
+  }
+  .af-iconbtn:hover { background: var(--af-surface); }
+  .af-m-logo { display: inline-flex; justify-content: center; }
+  .af-m-logo img { height: 26px; }
+  .af-cart-badge {
+    position: absolute;
+    top: 4px; right: 4px;
+    min-width: 18px; height: 18px;
+    padding: 0 5px;
+    background: var(--af-accent);
+    color: #fff;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .af-m-search-row {
+    padding: 8px 12px 12px;
+    background: #fff;
+    border-bottom: 1px solid var(--af-border);
+  }
+  .af-m-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--af-surface);
+    border: 1px solid var(--af-border);
+    border-radius: 999px;
+    font-size: 14px;
+    color: var(--af-fg-muted);
+  }
+
+  /* THE NEW BIT: department rail */
+  .af-m-rail {
+    background: #fff;
+    border-bottom: 1px solid var(--af-border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .af-m-rail::-webkit-scrollbar { display: none; }
+  .af-m-rail__list {
+    display: flex;
+    gap: 6px;
+    padding: 8px 12px;
+    margin: 0;
+    list-style: none;
+    width: max-content;
+  }
+  .af-m-rail__item {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--af-fg);
+    background: var(--af-surface);
+    border: 1px solid var(--af-border);
+    border-radius: 999px;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .af-m-rail__item:hover { border-color: var(--af-primary); color: var(--af-primary); }
+  .af-m-rail__item--active {
+    background: var(--af-primary);
+    color: #fff;
+    border-color: var(--af-primary);
+  }
+
+  .af-m-community {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--af-surface);
+    border-bottom: 1px solid var(--af-border);
+    font-size: 13px;
+  }
+  .af-m-community__left { display: flex; align-items: center; gap: 8px; }
+  .af-m-community__change {
+    color: var(--af-primary);
+    font-weight: 600;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .af-m-content { padding: 18px 16px 100px; }
+  .af-m-content h1 {
+    font-size: 22px;
+    margin: 0 0 8px;
+    font-weight: 700;
+    color: var(--af-primary);
+  }
+  .af-m-content p {
+    font-size: 14px;
+    color: var(--af-fg-muted);
+    line-height: 1.6;
+    margin: 0 0 16px;
+  }
+  .af-m-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .af-m-card {
+    aspect-ratio: 1;
+    background: var(--af-surface);
+    border-radius: var(--af-radius);
+    display: flex;
+    align-items: end;
+    padding: 12px;
+    font-size: 13px;
+    color: var(--af-fg-muted);
+  }
+
+  /* Sticky behavior in the right-side frame */
+  .sticky-host .af-m-main,
+  .sticky-host .af-m-rail {
+    position: sticky;
+    background: #fff;
+    z-index: 5;
+  }
+  .sticky-host .af-m-main { top: 0; }
+  .sticky-host .af-m-rail { top: 60px; }
+
+  .caption {
+    margin: 24px auto 0;
+    max-width: 980px;
+    font-size: 13px;
+    color: #9aa0aa;
+    line-height: 1.6;
+  }
+  .caption strong { color: #d4d6db; }
+</style>
+</head>
+<body>
+
+<div class="viewer">
+  <h1 class="viewer__title">Arctic Fresh — Header v2 (Mobile rail variant)</h1>
+  <p class="viewer__subtitle">Same shell as v1, but the mobile main bar is followed by a horizontal-scrolling department rail. One-tap access to popular departments without opening the drawer.</p>
+
+  <div class="compare">
+    <div class="compare__col">
+      <h3>v1 — drawer only</h3>
+      <div class="frame">
+        <div class="frame__body">
+          <div class="af">
+            <div class="af-m-announcement">Free shipping on orders over $250</div>
+            <div class="af-m-main">
+              <button class="af-iconbtn" aria-label="Open menu">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              </button>
+              <a href="#" class="af-m-logo"><img src="arctic-fresh-logo.png" alt="Arctic Fresh"></a>
+              <button class="af-iconbtn" aria-label="Cart">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                <span class="af-cart-badge">3</span>
+              </button>
+            </div>
+            <div class="af-m-search-row">
+              <div class="af-m-search">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>Search products…</span>
+              </div>
+            </div>
+            <div class="af-m-community">
+              <div class="af-m-community__left">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Delivering to <strong>Iqaluit</strong>
+              </div>
+              <button class="af-m-community__change">Change</button>
+            </div>
+            <div class="af-m-content">
+              <h1>Fresh, fairly delivered.</h1>
+              <p>To browse departments, tap the hamburger.</p>
+              <div class="af-m-grid">
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare__col">
+      <h3>v2 — drawer + department rail</h3>
+      <div class="frame">
+        <div class="frame__body sticky-host">
+          <div class="af">
+            <div class="af-m-announcement">Free shipping on orders over $250</div>
+            <div class="af-m-main">
+              <button class="af-iconbtn" aria-label="Open menu">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              </button>
+              <a href="#" class="af-m-logo"><img src="arctic-fresh-logo.png" alt="Arctic Fresh"></a>
+              <button class="af-iconbtn" aria-label="Cart">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                <span class="af-cart-badge">3</span>
+              </button>
+            </div>
+            <nav class="af-m-rail" aria-label="Departments">
+              <ul class="af-m-rail__list">
+                <li class="af-m-rail__item af-m-rail__item--active">All</li>
+                <li class="af-m-rail__item">Meat & Seafood</li>
+                <li class="af-m-rail__item">Fruits & Veg</li>
+                <li class="af-m-rail__item">Dairy & Eggs</li>
+                <li class="af-m-rail__item">Pantry</li>
+                <li class="af-m-rail__item">Frozen</li>
+                <li class="af-m-rail__item">Drinks</li>
+                <li class="af-m-rail__item">Baby & Kids</li>
+                <li class="af-m-rail__item">Home</li>
+                <li class="af-m-rail__item">Health</li>
+              </ul>
+            </nav>
+            <div class="af-m-search-row">
+              <div class="af-m-search">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>Search products…</span>
+              </div>
+            </div>
+            <div class="af-m-community">
+              <div class="af-m-community__left">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Delivering to <strong>Iqaluit</strong>
+              </div>
+              <button class="af-m-community__change">Change</button>
+            </div>
+            <div class="af-m-content">
+              <h1>Fresh, fairly delivered.</h1>
+              <p>Scroll to see the main bar + rail stay sticky. The rail collapses to ~104px total chrome.</p>
+              <div class="af-m-grid">
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+                <div class="af-m-card">Card</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="caption">
+    <strong>What changed in v2:</strong> a horizontal-scroll department rail sits directly under the main bar. Both stick on scroll (~104px combined chrome) so departments are always one tap away. Drawer (hamburger) still exists for full nav with subcategories.
+    <br><br>
+    <strong>Tradeoff:</strong> +44px of permanent vertical chrome and adds a horizontal-scroll component on top of vertical scroll — Baymard flagged that hijack pattern at Kroger when the component is too tall (rail here is intentionally slim, ~44px, far below 50% of viewport).
+  </p>
+</div>
+
+</body>
+</html>
