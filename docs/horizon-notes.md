@@ -94,10 +94,6 @@ For product images, prefer a 20–50px base64-inlined preview that blurs up to t
 
 Horizon ships `font-display: swap` by default — correct. Subset web fonts to Latin only; don't ship full extended-glyph files. If syllabics get added (e.g. for community names), load them as a separate small subset (Noto Sans Canadian Aboriginal works) only on pages that need them. Consider `font-display: optional` for body text if a chosen face feels even slightly oversized — system fallback (Helvetica/Arial/system-ui) is not a tragedy on a grocery site.
 
-### Why this matters here
-
-Defaults that are fine for southern Canadian customers can be punishing on northern bandwidth. The Lighthouse target in `CLAUDE.md` (Decision Principle #4) is 60+; aim higher when work supports it.
-
 ---
 
 ## Lessons learned
@@ -150,14 +146,6 @@ If you remove default list styling (`list-style: none`), Safari's screen reader 
 
 ---
 
-## Avoid
-
-- **Schema settings on speculation.** Start every section/block with `settings: []`. Add settings only when the user explicitly asks for them. Decision Principle #1.
-- **Treating `shopify theme check` as a behavior gate.** It's syntax-only — won't catch layout bugs, broken Liquid logic, or data binding issues. Always also load the page in the dev server and visually inspect.
-- **Adding a Web Component / `Component` framework usage when no JS is needed.** Horizon ships the framework but that doesn't mean every section needs to extend it. If the section is pure CSS and Liquid, leave it that way.
-
----
-
 ## Open questions / things to verify
 
 - Horizon's `Component` framework (`assets/component.js`) — confirm the lifecycle order (constructor → connectedCallback → ref population) when nesting Web Components.
@@ -168,17 +156,7 @@ If you remove default list styling (`list-style: none`), Safari's screen reader 
 
 ## Useful Horizon source files to read
 
-When unsure how to do X in Horizon, read these before writing custom:
-
-- `snippets/resource-list.liquid` — universal grid/carousel/bento/editorial layout switcher
-- `snippets/resource-card.liquid` — universal card primitive (used by product/collection/article cards)
-- `snippets/slideshow.liquid` (+ `slideshow-slide.liquid`, `slideshow-arrows.liquid`, `slideshow-controls.liquid`) — full carousel
-- `snippets/image.liquid` — responsive images
-- `snippets/section-header.liquid` — title + "View all" pattern
-- `assets/component.js` — Web Component base class (refs, event binding, lifecycle)
-- `blocks/group.liquid` — the foundational layout primitive
-
-The full inventory lives in the `section-builder` skill (`.claude/skills/section-builder/SKILL.md`).
+The `section-builder` skill (`.claude/skills/section-builder/SKILL.md`) has the full inventory of reusable snippets, cards, carousels, layout primitives, and the Web Component base. Reach for it before building custom UI.
 
 ---
 

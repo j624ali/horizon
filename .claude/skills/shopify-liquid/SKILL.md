@@ -5,7 +5,6 @@ user-invocable: false
 paths:
   - "**/*.liquid"
   - "assets/**"
-  - "schemas/**"
   - "locales/**"
   - "templates/**"
   - "config/**"
@@ -13,14 +12,9 @@ paths:
 
 # Horizon Theme Development Standards
 
-## Critical: Schema Editing
+## Schema editing
 
-**NEVER edit the `{% schema %}` block directly in `.liquid` files!**
-
-Schemas are generated from source files in the `schemas/` folder:
-1. Find the corresponding `.js` file in `schemas/blocks/` or `schemas/sections/`
-2. Edit the JavaScript source file
-3. Run `npm run build:schemas` to regenerate the `.liquid` files
+Edit `{% schema %}` blocks inline in `.liquid` files. This project does **not** use the upstream Horizon `schemas/*.js` + `npm run build:schemas` pipeline — there's no `schemas/` folder and no `package.json`. Keep schemas minimal: `settings: []` by default, just `name` and `presets`. Add settings only when explicitly asked. Full rule in `.claude/rules/code-style.md`.
 
 ## Core Conventions
 
@@ -53,12 +47,14 @@ Schemas are generated from source files in the `schemas/` folder:
 
 ### JavaScript
 - Zero external dependencies — use native browser APIs
-- Use the Component framework (`import { Component } from '@theme/component'`)
 - Web Components pattern with `customElements.define()`
+- **Component framework choice depends on the doctrine** (see `CLAUDE.md` → Shortcut doctrine):
+  - **Stock Horizon files** (forking vanilla): use `import { Component } from '@theme/component'` with refs, declarative event binding, JSDoc typedefs.
+  - **Net-new Arctic Fresh sections:** plain `class extends HTMLElement` with manual `querySelector` + `addEventListener`. The `Component` framework adds boilerplate that isn't worth it for self-contained components.
 - Async/await over `.then()` chaining
-- JSDoc type annotations for all components and functions
 - Early returns over nested conditionals
 - Use `const` over `let`, `for...of` over `.forEach()`
+- `AbortController` for fetch cleanup in long-lived components
 
 ### Localization
 - Every user-facing text must use `{{ 'key' | t }}` translation filter

@@ -1,88 +1,62 @@
 # Header / Navigation Audit
 
-Snapshot of how each available reference theme implements the header, with implications for the Arctic Fresh build.
+How the Arctic Fresh header is built today and what to keep / change when modifying it.
 
-> **Reference note:** This audit's "Horizon stock" comparisons are made against `references/horizon/` (a Shopify-published example Horizon theme). That folder is one example implementation, not the project's vanilla source-of-truth — for that, see the `Horizon vX.X` merge commits in this repo's git history (per `CLAUDE.md`).
+> **Reference baseline:** "Horizon stock" comparisons here are made against `references/horizon/` (one example Horizon theme). The project's vanilla source-of-truth is the `Horizon vX.X` merge commits in this repo's git history.
 
-> **Status update (2026-04-30):** The `_header-menu.liquid` variant split has happened. The dispatcher is now 252 lines, with three variant snippets: `snippets/header-menu-mega.liquid` (608 lines, mega menu), `snippets/header-menu-drawer.liquid` (44 lines, mobile drawer), `snippets/header-menu-rail.liquid` (122 lines, horizontal rail). Reflects the shortcut doctrine ("separate files per variant rather than `{% case %}` mega-blocks"). Anyone reading this audit fresh: the worktree state matches this split.
+> **Status (2026-04-30):** The `_header-menu.liquid` variant split has happened. Dispatcher is 252 lines; variants in `snippets/header-menu-mega.liquid` (608 lines), `snippets/header-menu-drawer.liquid` (44 lines), `snippets/header-menu-rail.liquid` (122 lines). Reflects the shortcut doctrine ("separate files per variant rather than `{% case %}` mega-blocks"). The `predictive-search-styles` / `slideshow-styles` render drift previously flagged is resolved — both renders are present.
 
-## This repo (current state)
+## Current state (this repo)
 
-The current header is **Horizon stock with minor drift** from the `references/horizon/` example.
+The header is **Horizon stock with Arctic Fresh-specific config**, no architectural divergence.
 
-- **Files:** `sections/header.liquid` (1646 lines), `sections/header-announcements.liquid`, `sections/search-header.liquid`, `sections/header-group.json`. Blocks: `_header-logo`, `_header-menu`, `_announcement`, `menu`. Snippets: `header-actions`, `header-drawer`, `header-row`, `mega-menu-list`, `search`, `search-modal`, `predictive-search-*`, `menu-font-styles`, `submenu-font-styles`.
-- **Tier structure:** Two-row header (top + bottom), each with its own color scheme. Configurable per-row placement of menu / search / localization. Optional secondary `header__navigation-bar-row` for desktop-only nav under the header. Announcement bar is a separate **sibling section** (`header-announcements`) inside the `header` group, not nested.
-- **Search:** Modal pattern (full-screen overlay) via `snippets/search-modal.liquid` + `predictive-search-*` snippets. Toggleable; can be in top or bottom row, left or right.
-- **Mobile pattern:** Slide-from-left drawer (`header-drawer.liquid`). Multi-level (handles ≤3 levels with details/accordion). Optional collection-image grid in submenus, optional featured products/collections at top level. Mobile header collapses to 5-cell grid: `[leftA][leftB][center][rightA][rightB]` (logo center, search/menu/account/cart distributed).
-- **Sticky behavior:** Three modes via schema setting — `always`, `scroll-up`, `never`. Driven by `<header-component>` Web Component (`header.js`) with `data-sticky-state` attribute.
-- **Mega menu:** `snippets/mega-menu-list.liquid` driven by Shopify navigation link list. Multiple menu styles: `collection_images`, `featured_collections`, `featured_products`. Underlay div (`.header__underlay-open`) animates open via CSS height + transition.
-- **Account/cart UI:** `snippets/header-actions.liquid` renders `<shopify-account>` (Shop's first-party account component) and `<cart-drawer-component>` (slide-out cart) or link-to-cart-page based on `settings.cart_type`. Cart bubble with item count.
+- **Files:** `sections/header.liquid`, `sections/header-announcements.liquid`, `sections/search-header.liquid`, `sections/header-group.json`. Blocks: `_header-logo`, `_header-menu`, `_announcement`, `menu`. Snippets: `header-actions`, `header-drawer`, `header-row`, `mega-menu-list`, `search`, `search-modal`, `predictive-search-*`, `header-menu-{mega,drawer,rail}`, `menu-font-styles`, `submenu-font-styles`.
+- **Layout:** Two-row header (top + bottom), each with its own color scheme. Per-row placement of menu / search / localization is configurable. Optional secondary `header__navigation-bar-row` for desktop-only nav under the header. Announcement bar is a sibling section (`header-announcements`) inside the `header` group, not nested.
+- **Search:** Full-screen modal via `search-modal.liquid` + `predictive-search-*`. Toggleable, can sit in either row, either side.
+- **Mobile:** Slide-from-left drawer (`header-drawer.liquid`), multi-level. Header collapses to a 5-cell grid (logo center, search/menu/account/cart distributed).
+- **Sticky:** `<header-component>` Web Component with three modes (`always`, `scroll-up`, `never`) via schema setting.
+- **Mega menu:** `mega-menu-list.liquid` driven by Shopify nav linklist. Styles: `collection_images`, `featured_collections`, `featured_products`. Animates open via CSS height transition.
+- **Account/cart:** `header-actions.liquid` renders `<shopify-account>` and `<cart-drawer-component>` (or link-to-cart) based on `settings.cart_type`.
 - **Transparent header:** Per-template (home/product/collection) toggle for hero overlay. Auto-disables when sticky.
-- **Localization:** `<dropdown-localization-component>` for desktop, `<drawer-localization-component>` for mobile drawer. Country flag, currency, language switcher.
-- **`@app` block support:** **None.** `sections/header.liquid` schema has empty `blocks: []` (only static `_header-logo` and `_header-menu` blocks via `content_for 'block'`). `sections/header-announcements.liquid` accepts only `_announcement` blocks. **Not actually a blocker for Northbound** — Northbound is a body-level app embed, not a per-section app block (see CLAUDE.md "Northbound Integration"). The selector mounts wherever the theme renders `<div data-northbound-location-slot>`. Adding `@app` slot remains worthwhile as future-proofing for *other* apps, but it isn't load-bearing here.
-- **Live config (`header-group.json`):** Already customized for Arctic Fresh. Two announcements running: NNC subsidy notice + "Delivering to 15 Nunavut communities". Menu uses `all-departments-new-site` linklist. `menu_row: bottom` (department nav under main row). `enable_sticky_header: always`. `divider_width: 1`. Color schemes 1 (top) / 2 (bottom) / 3 (announcement). `menu_style: collection_images` with `4/5` and `16/9` aspect ratios.
-- **Drift from `references/horizon/`:** Current `sections/header.liquid` is 7 lines shorter — missing `render 'predictive-search-styles'` and `render 'slideshow-styles'` calls in the early liquid block. Likely an accidental edit during prior experimentation; should be reverted or intentional.
+- **Localization:** `<dropdown-localization-component>` (desktop), `<drawer-localization-component>` (mobile drawer).
+- **`@app` block support:** None. Schema is `blocks: []` — only static `_header-logo` and `_header-menu` via `content_for 'block'`. Not a Northbound blocker — Northbound is a body-level app embed + DOM attribute contract; the selector mounts wherever `<div data-northbound-location-slot>` is rendered.
 
-## references/horizon (Shopify-published example theme)
+### Live config (`header-group.json`)
 
-Identical architecture to current repo. Differences from current repo are minimal — the missing predictive-search/slideshow style renders noted above. Used here as a convenient diff target; the canonical vanilla baseline is git history (`Horizon vX.X` merge commits).
+Already customized for Arctic Fresh:
 
-## dwell
+- Two announcements: NNC subsidy notice + "Delivering to 15 Nunavut communities".
+- Menu uses `all-departments-new-site` linklist.
+- `menu_row: bottom` (department nav under main row).
+- `enable_sticky_header: always`.
+- Color schemes 1 (top) / 2 (bottom) / 3 (announcement).
+- `menu_style: collection_images` with `4/5` and `16/9` aspect ratios.
 
-**Identical file inventory and same block/snippet names as Horizon stock.** Hex-level diff with this repo:
+## Reference theme comparisons (one-line summaries)
 
-- `sections/header.liquid` differs (Dwell has its own tweaks to layout/scheme handling).
-- `blocks/_header-menu.liquid` differs.
-- `snippets/header-actions.liquid` differs.
+Detailed snapshots are not load-bearing — the *recommendations* below are what matters when modifying the header.
 
-Dwell is **a Horizon-derived theme that follows the same architectural convention** — block-based header, same drawer/modal patterns, same Web Components. It extends rather than replaces. Useful as a reference for "ways to extend Horizon's header without rebuilding," but the diffs are stylistic, not structural.
+- **`references/horizon/`** — identical architecture to current repo; trivial diff. Convenient diff target, but git history is the canonical baseline.
+- **`references/dwell/`** — Horizon-derived; identical block/snippet inventory; stylistic diffs only in `sections/header.liquid`, `blocks/_header-menu.liquid`, `snippets/header-actions.liquid`. Useful as "ways to extend Horizon's header without rebuilding."
+- **`references/hyper/`** — different architecture (3053-line monolithic section, settings-driven, Tailwind-style utilities). **Not a candidate base** — diverges from Horizon conventions.
+- **`references/dawn/`** — older Shopify reference (pre-Horizon). Notable: header schema accepts `@app` blocks (`for block in section.blocks; if block.type == '@app'`). Worth porting only if we ever host non-Northbound apps in the header.
 
-## hyper
+## Legacy theme (`arcticfresh-legacy-theme-export`)
 
-**Different architecture — not block-based, single-file section approach.**
+Bootstrap 4 / jQuery / Slick.js, three-tier layout. **Reference only** — preserve the Northbound contract, ignore the code style.
 
-- `sections/header.liquid` is **3053 lines** (vs Horizon's 1646). Self-contained. No header blocks; everything is settings-driven inside the section.
-- Snippets: `desktop-menu.liquid` (208 lines), `mega-menu.liquid` (397 lines), `menu-drawer.liquid` (168 lines), `predictive-search.liquid` (317 lines).
-- **Tier structure:** `.header__top` and `.header__bottom` rows, layout selectable via `header_layout` setting. Configurable padding per row.
-- **Sticky:** Custom `<sticky-header is="sticky-header">` Web Component with `data-sticky-type` and `data-collapse-on-scroll` options.
-- **Mega menu:** Larger, more elaborate than Horizon's. Multiple layout patterns inside `mega-menu.liquid`.
-- **Mobile drawer:** `menu-drawer-button` with `aria-controls="MenuDrawer"`, separate `menu_mobile` link list setting (so mobile menu can differ from desktop).
-- **Search:** Dedicated `predictive-search.liquid` (317 lines) — heavier predictive search UX.
-- **Tailwind-style utility classes** (`flex items-center lg:hidden`) — different convention from Horizon's BEM.
-- **`@app` blocks:** Not surveyed in detail — Hyper isn't a candidate for the base.
+- **Tier 1 (top):** NNC subsidy disclaimer with `<span data-northbound-min-order-display>$95</span>`, top nav linklist, `<div data-northbound-location-slot>` (community selector mount).
+- **Tier 2 (middle, sticky):** Logo, hamburger toggle, search form (GET to `/search`), cart button with item-count badge.
+- **Tier 3 (bottom):** "All Departments" mega-menu trigger, main nav linklist, repeated top nav + Northbound location slot.
 
-Useful as a reference for "what a maximalist header-as-section looks like," but diverges from Horizon conventions; not a candidate base.
+**Northbound integration hooks (preserve these contract names):**
 
-## dawn
+- `data-northbound-min-order-display` — populated with the live minimum-order amount.
+- `data-northbound-location-slot` — community selector mount point (legacy renders this in BOTH top and bottom rows; one is sufficient — the runtime populates every match).
 
-**Older Shopify reference theme (pre-Horizon).**
+**Content inventory worth preserving:** NNC disclaimer copy, "All Departments" affordance, persistent community indicator, mobile cart icon with badge, three menu link lists (top nav, main nav, departments nav).
 
-- `sections/header.liquid` (638 lines) + `header-mega-menu.liquid` (94), `header-drawer.liquid` (295), `header-search.liquid` (108).
-- Section iterates `section.blocks` looking for `@app` type — Dawn **does** accept `@app` blocks in header (`for block in section.blocks; if block.type == '@app'`). Horizon's header doesn't, but this isn't a Northbound blocker (Northbound mounts via `data-northbound-location-slot`, not via app blocks). Pattern is still worth porting if we ever need to host other apps in the header.
-- `<sticky-header data-sticky-type="...">` Web Component (similar pattern to hyper, predates Horizon's `<header-component>`).
-- **Mega menu:** Single snippet, simpler than Horizon's. Driven by Shopify nav linklist.
-- **Search:** `<details-modal>`/`<predictive-search>` modal pattern — solid baseline, similar in spirit to Horizon's.
-- **Mobile drawer:** Stacked details/summary tree, simpler than Horizon's drawer (which has level-3 submenu navigation, featured content panels, animations).
-- **CSS:** External component CSS files (`component-list-menu.css`, `component-search.css`, `component-menu-drawer.css`) loaded with `media="print" onload="this.media='all'"` trick. Horizon uses inline `{% stylesheet %}`.
-
-Useful for understanding **how `@app` blocks slot into a header schema** (Dawn pattern can be ported to Horizon if we ever host non-Northbound apps in the header). Otherwise the architecture is older.
-
-## arcticfresh-legacy-theme-export (live legacy site)
-
-Three-tier Bootstrap 4 / jQuery / Slick.js theme. **Reference only.**
-
-- **`snippets/header.liquid` (114 lines)** + `snippets/navigation-all-departments.liquid` (38 lines). Loaded via `{% include 'header' %}` (deprecated tag) from `layout/theme.liquid`.
-- **Tier 1 (top, primary-bg):** NNC subsidy disclaimer with `<span data-northbound-min-order-display>$95</span>`, top nav linklist (`settings.top_nav`), and `<div data-northbound-location-slot>` (community selector mount point).
-- **Tier 2 (middle, wood-bg, sticky):** Logo, hamburger toggle (Bootstrap collapse), search form (GET to `/search`), cart button (text + icon, with item count badge), mobile cart icon.
-- **Tier 3 (bottom):** "All Departments" mega-menu trigger (renders `navigation-all-departments`), main nav linklist (`settings.main_nav`), repeated top nav + Northbound location slot.
-- **Mega menu:** Bootstrap col-md-4/col-md-8 split. Left rail = parent department list, right rail = children grid. Supports `product_link` type rendering inline `product-item` snippet.
-- **Search:** Inline form, no autocomplete, no predictive search.
-- **Northbound integration hooks (preserve these contract names):**
-  - `data-northbound-min-order-display` — populated with the live minimum-order amount.
-  - `data-northbound-location-slot` — community selector mount point (appears in BOTH top and bottom rows).
-- **Content inventory worth preserving:** NNC disclaimer copy, "All Departments" affordance, persistent community indicator, mobile cart icon with badge, three menu link lists (top nav, main nav, departments nav).
-
-Structure to abandon: jQuery, Bootstrap, Slick, `{% include %}`, repeating nav in two places, no predictive search.
+**Structure to abandon:** jQuery, Bootstrap, Slick, `{% include %}`, repeating nav in two places, no predictive search.
 
 ---
 
@@ -90,31 +64,26 @@ Structure to abandon: jQuery, Bootstrap, Slick, `{% include %}`, repeating nav i
 
 ### Strongest base to extend
 
-**Horizon stock (current repo, with the small drift cleaned up).** The block-based architecture, multi-row layout primitive, sticky modes, predictive-search modal, accessible drawer, `<header-component>`/`<shopify-account>`/`<cart-drawer-component>` integrations, and BEM/scoped-CSS conventions are all already production-quality. Replacing them with Dawn-style or Hyper-style code would be regression. The work is **extension, not rewrite.**
+**Horizon stock (current repo).** The block-based architecture, multi-row layout primitive, sticky modes, predictive-search modal, accessible drawer, `<header-component>`/`<shopify-account>`/`<cart-drawer-component>` integrations, and BEM/scoped-CSS conventions are production-quality. The work is **extension, not rewrite.**
 
 ### Top 5 patterns to reuse
 
-1. **`<header-component>` + `data-sticky-state` + sticky modes** (`always` / `scroll-up` / `never`) — keep as-is; Arctic Fresh likely wants `scroll-up` for grocery (preserve viewport while showing cart on demand).
-2. **Predictive search modal** (`search-modal.liquid` + `predictive-search-*`) — full-screen overlay is the right grocery UX. Don't downgrade.
-3. **`header-drawer.liquid` for mobile** — multi-level, accessible, animated, supports collection images and featured content. Keep.
-4. **`<cart-drawer-component>`** — slide-out cart with view-transitions. Already wired in `header-actions.liquid`.
-5. **Multi-row header with per-row color scheme** — gives us the 3-tier layout (announcement → main → departments) without inventing new layout primitives. Configure via `menu_row: bottom` (already set in `header-group.json`).
+1. **`<header-component>` + `data-sticky-state` + sticky modes** — keep as-is; Arctic Fresh likely wants `scroll-up` for grocery (preserve viewport while showing cart on demand).
+2. **Predictive search modal** (`search-modal.liquid` + `predictive-search-*`) — full-screen overlay is the right grocery UX.
+3. **`header-drawer.liquid` for mobile** — multi-level, accessible, animated, supports collection images and featured content.
+4. **`<cart-drawer-component>`** — already wired in `header-actions.liquid`.
+5. **Multi-row header with per-row color scheme** — gives the 3-tier layout (announcement → main → departments) without inventing new primitives. Configure via `menu_row: bottom`.
 
 ### Top 3 patterns to avoid
 
-1. **Hyper's monolithic 3000-line section.** Block-based header is more maintainable; a fresh dev session can navigate it without spelunking.
-2. **Dawn's external component CSS files with `media="print"` swap.** Horizon's inline `{% stylesheet %}` is the convention; mixing styles will fragment the codebase.
-3. **Legacy's repeated nav in tier 1 and tier 3.** The same links shouldn't appear twice. Consolidate.
+1. **Hyper's monolithic 3000-line section.** Block-based is more maintainable.
+2. **Dawn's external component CSS files with `media="print"` swap.** Horizon's inline `{% stylesheet %}` is the convention.
+3. **Legacy's repeated nav in tier 1 and tier 3.** Same links shouldn't appear twice.
 
 ### Open questions
 
-1. **Community selector placement.** Northbound's runtime injects the selector UI into any `<div data-northbound-location-slot>` the theme renders. The question isn't *how to accept an app block* — it's *where in the header markup to drop the slot*. Options:
-   - **(a) Inside the announcement bar** — matches legacy tier-1 placement; selector sits above the main header row.
-   - **(b) Inside the main header row** next to cart/account — selector lives in the persistent action zone.
-   - **(c) Both** — runtime populates every `data-northbound-location-slot` on the page, so a duplicate works (legacy theme does this).
-   - Recommend (b) for visibility on every page; cart and selector are the two community-driven controls. Decision needed.
-2. **Restore the missing `predictive-search-styles` / `slideshow-styles` renders** in `sections/header.liquid` (current repo is 7 lines shorter than `references/horizon/`). Was this intentional?
-3. **Sticky mode for Arctic Fresh:** `always` (current setting) vs `scroll-up` (recommendation). `scroll-up` reclaims viewport on long collection pages but may feel less "always available" for cart. Decide based on mobile cart-access UX priority.
-4. **Search bar visibility on desktop.** Currently icon → modal. Many grocery sites use a persistent inline search bar in the main row. Worth deciding before the playground sketch.
-5. **Account UI when accounts disabled.** `header-actions.liquid` only renders `<shopify-account>` when `shop.customer_accounts_enabled`. Confirm the live store has accounts on (legacy theme has account UI but it's not visible in this snippet).
-6. **Mobile bottom-row visibility.** The bottom row has `mobile:hidden` (`sections/header.liquid:346`). Department nav doesn't appear on mobile by default — relies entirely on the drawer. Acceptable, or do we want a horizontal-scroll department strip on mobile too?
+1. **Community selector placement.** Northbound's runtime injects the selector UI into any `<div data-northbound-location-slot>` the theme renders. Options: (a) inside the announcement bar — matches legacy tier-1 placement; (b) inside the main header row next to cart/account — selector lives in the persistent action zone; (c) both — runtime populates every match. **Recommend (b)** for visibility; cart and selector are the two community-driven controls.
+2. **Sticky mode:** `always` (current) vs `scroll-up` (recommendation). `scroll-up` reclaims viewport on long collection pages but may feel less "always available" for cart.
+3. **Search bar visibility on desktop.** Currently icon → modal. Many grocery sites use a persistent inline search bar in the main row. Worth deciding before the playground sketch.
+4. **Account UI when accounts disabled.** `header-actions.liquid` only renders `<shopify-account>` when `shop.customer_accounts_enabled`. Confirm the live store has accounts on.
+5. **Mobile bottom-row visibility.** Bottom row is `mobile:hidden`. Department nav doesn't appear on mobile by default — relies entirely on the drawer. Acceptable, or do we want a horizontal-scroll department strip on mobile too?

@@ -63,6 +63,4 @@ The collapsed-by-default rule keeps the PDP clean for browsing while making the 
 ## References
 
 - `references/northbound/docs/waleed-feedback-2026-04-27.md` — April 2026 client feedback on the PDP breakdown panel.
-- Instacart SNAP-eligible badge pattern (small green tag below price, no strikethrough).
-- Amazon Fresh EBT-eligible label pattern.
-- Costco member pricing convention (member-only price shown without comparison).
+- Pattern anchors: Instacart SNAP-eligible, Amazon Fresh EBT-eligible, Costco member pricing — all show the eligible price as the price, with a small badge, no strikethrough.

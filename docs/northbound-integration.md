@@ -89,13 +89,7 @@ When making app changes:
 
 ## Active theme-side feature requests
 
-Apr 2026 client feedback (captured in `references/northbound/docs/waleed-feedback-2026-04-27.md`):
-
-- NNC eligibility badges on product cards
-- Per-item NNC breakdown panel on PDP (see `docs/nnc-display.md` for the visual pattern)
-- +/- qty buttons in cart line items
-
-Checkout disclaimers and the Canadian North employee gate are likely checkout-extension work, not theme. Cross-check `references/northbound/docs/resources/arcticfresh-working-doc.md` for current state before starting any of these.
+Tracked in `docs/roadmap.md` (Product Page & Product Card, Cart) — single source of truth so this doc doesn't drift. Original April 2026 client feedback is captured in `references/northbound/docs/waleed-feedback-2026-04-27.md`; checkout disclaimers and the Canadian North employee gate are likely checkout-extension work, not theme.
 
 ## Reference
 

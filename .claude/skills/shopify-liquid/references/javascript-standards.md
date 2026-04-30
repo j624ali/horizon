@@ -6,7 +6,11 @@
 - **Avoid mutation** - Use `const` over `let` unless necessary
 - **Use `for (const item of items)`** over `items.forEach()`
 - **Add new lines before blocks** with `{` and `}`
-- **Use the component framework** - See [the framework code](assets/component.js) and the [component documentation](codex/component-framework.md)
+- **Component framework choice depends on doctrine** (see `CLAUDE.md` → Shortcut doctrine):
+  - **Stock Horizon files** (forking vanilla): use the `Component` framework — source at `assets/component.js`.
+  - **Net-new Arctic Fresh sections:** plain `class extends HTMLElement` with manual `querySelector` + `addEventListener`.
+
+The patterns documented below (refs, declarative event binding, JSDoc typedefs) apply when using the `Component` framework — i.e. when working in stock Horizon files.
 
 ## Async/Await Syntax
 

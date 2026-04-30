@@ -57,11 +57,4 @@ Verified 2026-04-29:
 
 **Baby & Kids has no umbrella collection** — needs creating in admin if it should appear on the homepage department strip.
 
-## When to reach for it
-
-- Confirming collection handles exist before referencing them in Liquid.
-- Checking for admin-uploaded collection images.
-- Reading product metafields (`custom.shipping_class`, `custom.nnc_item_code`).
-- Searching the catalog by title, tag, or vendor.
-
 For background on the legacy data layout, see `references/northbound/docs/resources/current-site-setup.md`.

@@ -1,17 +1,9 @@
 
 # Liquid Syntax Standards
 
-## ⚠️ CRITICAL: Schema Editing
+## Schema editing
 
-**NEVER edit the `{% schema %}` block directly in `.liquid` files!**
-
-Schemas are generated from source files in the `schemas/` folder. To make schema changes:
-
-1. Find the corresponding `.js` file in `schemas/blocks/` or `schemas/sections/`
-2. Edit the JavaScript source file
-3. Run `npm run build:schemas` to regenerate the `.liquid` files
-
-See [@schemas](references/schemas.md) for more details.
+Edit `{% schema %}` blocks inline in `.liquid` files. This project does **not** use the upstream Horizon `schemas/*.js` build pipeline — there's no `schemas/` folder and no `package.json`. Keep schemas minimal: `settings: []`, just `name` and `presets`. See [schemas.md](schemas.md) and `.claude/rules/code-style.md`.
 
 ---
 
