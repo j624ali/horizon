@@ -684,5 +684,82 @@
     --cart-secondary-font-family: var(--font-{{ settings.cart_price_font }}--family);
     --cart-secondary-font-style: var(--font-{{ settings.cart_price_font }}--style);
     --cart-secondary-font-weight: var(--font-{{ settings.cart_price_font }}--weight);
+
+    /* ============================================================
+       Arctic Fresh design tokens
+       Primitives only. Components consume these — they don't mint
+       new tokens. See docs/horizon-notes.md ("Components consume
+       primitives") and docs/roadmap.md for the locked picks.
+       ============================================================ */
+
+    /* Brand palette — name tokens for brand swatches.
+       Color schemes use these for role tokens (foreground/accent);
+       fixed-color components (NNC pill, sale price) reach for them
+       directly. */
+    --color-arctic-mint: #5adb97;
+    --color-arctic-forest: #00602d;
+    --color-arctic-deep-forest: #003d1c;
+    --color-arctic-coral: #ff8b69;
+
+    /* Role tokens — visual-named aliases. Reach for these in component
+       CSS instead of stock Horizon scheme-scoped tokens
+       (--color-foreground-muted, --color-border, etc.) which are
+       functional names that don't describe what the color looks like.
+       If a needed role isn't here, ADD IT — don't reach for the stock
+       Horizon foreground/background tokens directly. */
+
+    /* Surfaces — fills by role (not by hue). */
+    --color-arctic-surface-page: #ffffff;
+    --color-arctic-surface-elevated: #ffffff;
+    --color-arctic-surface-muted: #f5f7f3; /* soft sage tint */
+    --color-arctic-surface-dark: var(--color-arctic-forest);
+
+    /* Ink — text colors by weight. */
+    --color-arctic-ink-strong: var(--color-arctic-deep-forest);
+    --color-arctic-ink-default: #232323;
+    --color-arctic-ink-muted: #6b7a72;
+    --color-arctic-ink-inverse: #ffffff;
+
+    /* Borders — by emphasis. */
+    --color-arctic-border-hairline: #e6e6e6;
+    --color-arctic-border-default: #dfdfdf;
+    --color-arctic-border-strong: var(--color-arctic-forest);
+
+    /* Washes — translucent state fills (hover/active/focus). */
+    --color-arctic-mint-wash: rgb(90 219 151 / 0.08);
+    --color-arctic-coral-wash: rgb(255 139 105 / 0.08);
+    --color-arctic-overlay-dim: rgb(0 0 0 / 0.45);
+
+    /* Container max width — grocery feels orphaned past 1280px */
+    --narrow-page-width: 80rem;
+
+    /* Body line-height — the picker locked 1.55, Horizon ships 1.4 */
+    --line-height--body-normal: 1.55;
+
+    /* Heading tracking — picker locked -0.015em on heading-normal */
+    --letter-spacing--heading-normal: -0.015em;
+    --letter-spacing--display-tight: -0.02em;
+
+    /* Section padding — desktop 64px, mobile 40px */
+    --arctic-section-padding-block: 40px;
+    --arctic-grid-gap: 16px;
+    --arctic-card-padding: 20px;
+
+    /* Card surface — hairline border + subtle shadow */
+    --arctic-card-border-color: rgb(0 0 0 / 0.06);
+    --arctic-card-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+
+    /* Card hover — 1px translate, no shadow change */
+    --hover-lift-amount: 1px;
+
+    /* Focus ring — forest, 2px outline + 2px offset */
+    --focus-outline-width: 2px;
+    --focus-outline-offset: 2px;
+  }
+
+  @media screen and (min-width: 750px) {
+    :root {
+      --arctic-section-padding-block: 64px;
+    }
   }
 {% endstyle %}
