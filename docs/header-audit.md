@@ -2,11 +2,13 @@
 
 Snapshot of how each available reference theme implements the header, with implications for the Arctic Fresh build.
 
-> **Path note:** The CLAUDE.md "References" section lists `references/horizon-export/` and `references/dawn-export/`. The actual on-disk paths are `references/arcticfresh-horizon-export/` and `references/arcticfresh-dawn-export/`. The "vanilla Horizon" baseline used in this audit is `arcticfresh-horizon-export/`. CLAUDE.md should be updated.
+> **Reference note:** This audit's "Horizon stock" comparisons are made against `references/horizon/` (a Shopify-published example Horizon theme). That folder is one example implementation, not the project's vanilla source-of-truth — for that, see the `Horizon vX.X` merge commits in this repo's git history (per `CLAUDE.md`).
+
+> **Status update (2026-04-30):** The `_header-menu.liquid` variant split has happened. The dispatcher is now 252 lines, with three variant snippets: `snippets/header-menu-mega.liquid` (608 lines, mega menu), `snippets/header-menu-drawer.liquid` (44 lines, mobile drawer), `snippets/header-menu-rail.liquid` (122 lines, horizontal rail). Reflects the shortcut doctrine ("separate files per variant rather than `{% case %}` mega-blocks"). Anyone reading this audit fresh: the worktree state matches this split.
 
 ## This repo (current state)
 
-The current header is **Horizon stock with minor drift** from `arcticfresh-horizon-export`.
+The current header is **Horizon stock with minor drift** from the `references/horizon/` example.
 
 - **Files:** `sections/header.liquid` (1646 lines), `sections/header-announcements.liquid`, `sections/search-header.liquid`, `sections/header-group.json`. Blocks: `_header-logo`, `_header-menu`, `_announcement`, `menu`. Snippets: `header-actions`, `header-drawer`, `header-row`, `mega-menu-list`, `search`, `search-modal`, `predictive-search-*`, `menu-font-styles`, `submenu-font-styles`.
 - **Tier structure:** Two-row header (top + bottom), each with its own color scheme. Configurable per-row placement of menu / search / localization. Optional secondary `header__navigation-bar-row` for desktop-only nav under the header. Announcement bar is a separate **sibling section** (`header-announcements`) inside the `header` group, not nested.
@@ -17,13 +19,13 @@ The current header is **Horizon stock with minor drift** from `arcticfresh-horiz
 - **Account/cart UI:** `snippets/header-actions.liquid` renders `<shopify-account>` (Shop's first-party account component) and `<cart-drawer-component>` (slide-out cart) or link-to-cart-page based on `settings.cart_type`. Cart bubble with item count.
 - **Transparent header:** Per-template (home/product/collection) toggle for hero overlay. Auto-disables when sticky.
 - **Localization:** `<dropdown-localization-component>` for desktop, `<drawer-localization-component>` for mobile drawer. Country flag, currency, language switcher.
-- **`@app` block support:** **None.** `sections/header.liquid` schema has empty `blocks: []` (only static `_header-logo` and `_header-menu` blocks via `content_for 'block'`). `sections/header-announcements.liquid` accepts only `_announcement` blocks. **This is a blocker for placing the Northbound community selector inside the header without modifying the schema.**
+- **`@app` block support:** **None.** `sections/header.liquid` schema has empty `blocks: []` (only static `_header-logo` and `_header-menu` blocks via `content_for 'block'`). `sections/header-announcements.liquid` accepts only `_announcement` blocks. **Not actually a blocker for Northbound** — Northbound is a body-level app embed, not a per-section app block (see CLAUDE.md "Northbound Integration"). The selector mounts wherever the theme renders `<div data-northbound-location-slot>`. Adding `@app` slot remains worthwhile as future-proofing for *other* apps, but it isn't load-bearing here.
 - **Live config (`header-group.json`):** Already customized for Arctic Fresh. Two announcements running: NNC subsidy notice + "Delivering to 15 Nunavut communities". Menu uses `all-departments-new-site` linklist. `menu_row: bottom` (department nav under main row). `enable_sticky_header: always`. `divider_width: 1`. Color schemes 1 (top) / 2 (bottom) / 3 (announcement). `menu_style: collection_images` with `4/5` and `16/9` aspect ratios.
-- **Drift from arcticfresh-horizon-export:** Current `sections/header.liquid` is 7 lines shorter — missing `render 'predictive-search-styles'` and `render 'slideshow-styles'` calls in the early liquid block. Likely an accidental edit during prior experimentation; should be reverted or intentional.
+- **Drift from `references/horizon/`:** Current `sections/header.liquid` is 7 lines shorter — missing `render 'predictive-search-styles'` and `render 'slideshow-styles'` calls in the early liquid block. Likely an accidental edit during prior experimentation; should be reverted or intentional.
 
-## arcticfresh-horizon-export (vanilla Horizon baseline)
+## references/horizon (Shopify-published example theme)
 
-Identical architecture to current repo (it's the baseline). Differences from current repo are minimal — the missing predictive-search/slideshow style renders noted above. Treat as the canonical Horizon stock for diff/comparison purposes.
+Identical architecture to current repo. Differences from current repo are minimal — the missing predictive-search/slideshow style renders noted above. Used here as a convenient diff target; the canonical vanilla baseline is git history (`Horizon vX.X` merge commits).
 
 ## dwell
 
@@ -56,14 +58,14 @@ Useful as a reference for "what a maximalist header-as-section looks like," but 
 **Older Shopify reference theme (pre-Horizon).**
 
 - `sections/header.liquid` (638 lines) + `header-mega-menu.liquid` (94), `header-drawer.liquid` (295), `header-search.liquid` (108).
-- Section iterates `section.blocks` looking for `@app` type — Dawn **does** accept `@app` blocks in header (`for block in section.blocks; if block.type == '@app'`). This pattern is what Horizon currently lacks.
+- Section iterates `section.blocks` looking for `@app` type — Dawn **does** accept `@app` blocks in header (`for block in section.blocks; if block.type == '@app'`). Horizon's header doesn't, but this isn't a Northbound blocker (Northbound mounts via `data-northbound-location-slot`, not via app blocks). Pattern is still worth porting if we ever need to host other apps in the header.
 - `<sticky-header data-sticky-type="...">` Web Component (similar pattern to hyper, predates Horizon's `<header-component>`).
 - **Mega menu:** Single snippet, simpler than Horizon's. Driven by Shopify nav linklist.
 - **Search:** `<details-modal>`/`<predictive-search>` modal pattern — solid baseline, similar in spirit to Horizon's.
 - **Mobile drawer:** Stacked details/summary tree, simpler than Horizon's drawer (which has level-3 submenu navigation, featured content panels, animations).
 - **CSS:** External component CSS files (`component-list-menu.css`, `component-search.css`, `component-menu-drawer.css`) loaded with `media="print" onload="this.media='all'"` trick. Horizon uses inline `{% stylesheet %}`.
 
-Useful for understanding **how `@app` blocks slot into a header schema** (Dawn pattern can be ported to Horizon). Otherwise the architecture is older.
+Useful for understanding **how `@app` blocks slot into a header schema** (Dawn pattern can be ported to Horizon if we ever host non-Northbound apps in the header). Otherwise the architecture is older.
 
 ## arcticfresh-legacy-theme-export (live legacy site)
 
@@ -106,12 +108,12 @@ Structure to abandon: jQuery, Bootstrap, Slick, `{% include %}`, repeating nav i
 
 ### Open questions
 
-1. **Community selector placement.** Horizon's header sections do not accept `@app` blocks. Three options to resolve:
-   - **(a) Extend `header-announcements.liquid` schema** to accept `{ "type": "@app" }` alongside `_announcement`. Mounts the selector in the announcement bar (matches the legacy theme's tier-1 placement). Lowest-risk change.
-   - **(b) Extend `header.liquid` schema** to accept `@app` blocks in a new "actions" zone. Selector lives next to cart/account.
-   - **(c) Build a new section between announcement-bar and header** that accepts only `@app` blocks. Cleanest separation.
-   - Recommend (a) for parity with legacy + minimal schema surgery. Decision needed.
-2. **Restore the missing `predictive-search-styles` / `slideshow-styles` renders** in `sections/header.liquid` (current repo is 7 lines shorter than `arcticfresh-horizon-export`). Was this intentional?
+1. **Community selector placement.** Northbound's runtime injects the selector UI into any `<div data-northbound-location-slot>` the theme renders. The question isn't *how to accept an app block* — it's *where in the header markup to drop the slot*. Options:
+   - **(a) Inside the announcement bar** — matches legacy tier-1 placement; selector sits above the main header row.
+   - **(b) Inside the main header row** next to cart/account — selector lives in the persistent action zone.
+   - **(c) Both** — runtime populates every `data-northbound-location-slot` on the page, so a duplicate works (legacy theme does this).
+   - Recommend (b) for visibility on every page; cart and selector are the two community-driven controls. Decision needed.
+2. **Restore the missing `predictive-search-styles` / `slideshow-styles` renders** in `sections/header.liquid` (current repo is 7 lines shorter than `references/horizon/`). Was this intentional?
 3. **Sticky mode for Arctic Fresh:** `always` (current setting) vs `scroll-up` (recommendation). `scroll-up` reclaims viewport on long collection pages but may feel less "always available" for cart. Decide based on mobile cart-access UX priority.
 4. **Search bar visibility on desktop.** Currently icon → modal. Many grocery sites use a persistent inline search bar in the main row. Worth deciding before the playground sketch.
 5. **Account UI when accounts disabled.** `header-actions.liquid` only renders `<shopify-account>` when `shop.customer_accounts_enabled`. Confirm the live store has accounts on (legacy theme has account UI but it's not visible in this snippet).

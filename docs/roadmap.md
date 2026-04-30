@@ -12,10 +12,30 @@ Setup work that unblocks everything else. Bias toward doing these early.
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Brand tokens (colors, fonts, spacing) defined in `config/settings_data.json` | not started | Pull palette from legacy theme + client brand if any. |
+| Brand tokens (colors, fonts, spacing) defined in `config/settings_data.json` + `snippets/theme-styles-variables.liquid` | done | Locked 2026-04-29. See **Design system locks** below. Review surface: `templates/page.design-system.json`. |
 | `theme.liquid` skeleton (head, scripts, layout shells) reviewed for Arctic Fresh | not started | Horizon ships a sane default; mostly want to verify nothing legacy-Arctic crept in. |
 | Page-template baseline (`templates/page.json`) for static pages | not started | Decision Principle #5 — one flexible template. |
-| Northbound app block placement zones identified | not started | Where exactly do `@app` blocks need to be accepted? Cart, product, header (community selector). |
+| Northbound DOM-attribute hooks identified per surface | not started | Northbound is an app-embed + `data-northbound-*` contract, not per-section app blocks. Map which surfaces (header, card, PDP, cart drawer, cart page) need which hooks. See **Northbound Integration** in CLAUDE.md. |
+
+### Design system locks (2026-04-29)
+
+Primitives only. Components consume these — see `docs/horizon-notes.md` ("Components consume primitives — they don't mint tokens").
+
+- **Palette**: mint `#5adb97`, forest `#00602d`, deep forest `#003d1c`, coral `#ff8b69` (sales only — never NNC). Exposed as `--color-arctic-mint/forest/deep-forest/coral`.
+- **Type**: Manrope only (dropped serif option). 16/1.25 modular scale → 12·14·16·18·20·25·31·39. Body 400, h1 700, h2–h6 600. Body line-height 1.55. Heading tracking -0.015em.
+- **Radii**: card 12 · button 8 · input 6 · badge 4. Schema-driven (`*_corner_radius` in `settings_data.json`).
+- **Spacing**: 4/8/12/16/24/32/48/64. Section padding 64 desktop / 40 mobile. Grid gap 16. Card padding 20. Button 44h × 20px.
+- **Effects**: hairline border `rgb(0 0 0 / 0.06)`, subtle shadow `0 1px 2px rgb(0 0 0 / 0.04)`, card hover 1px translate-y (no shadow change), image 1:1 cards / 4:5 PDP.
+- **Color schemes**: 3 — Light (default), Forest (CTAs/footer), Mint (NNC surfaces). No fourth.
+- **Container**: `--narrow-page-width: 80rem` (1280px). Editorial prose 65ch.
+- **Focus ring**: forest, 2px outline + 2px offset.
+- **Mint use**: accent only. CTAs are forest.
+- **NNC**: eligibility-not-sale (`docs/nnc-display.md`).
+
+**Deferred to component build (lock pixel values when the section exists, not now):**
+- NNC pill (mint bg, deep-forest text, ~12/600, badge radius — confirm sizing on a real product card)
+- Buy-It-Again card (denser variant, ~96px image, title+price only — confirm when BIA section is built)
+- Mobile bottom nav (white bg, hairline top border — verify against cart-drawer chrome first)
 
 ---
 
@@ -74,7 +94,7 @@ NNC-aware. Source of truth for shipping class is `custom.shipping_class` metafie
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Product card variants (collection grid, featured row, search result) | not started | Card needs to host `@app` block for Northbound pricing. |
+| Product card variants (collection grid, featured row, search result) | not started | Card price + ATC must emit Northbound DOM hooks (`data-northbound-price-surface`, `-price-display`, `-compare-display`, `-add-to-cart`) so the runtime can rewrite to community-adjusted pricing. |
 | NNC eligibility badge on card | not started | From Apr 2026 client feedback. Read `custom.shipping_class`. |
 | Product page layout (gallery, info, ATC, related) | not started | Horizon's stock product template is a good starting point. |
 | Per-item NNC breakdown panel on PDP | not started | From Apr 2026 client feedback. May need new app proxy data. |
@@ -114,11 +134,11 @@ Template-driven (Decision Principle #5). One flexible template, populate via adm
 
 ## Community Selector
 
-**Owned by Northbound, not the theme.** The theme's job is to provide a placement zone (`@app` block) and not conflict with the selector's behavior. Out of scope as a theme-side build.
+**Owned by Northbound, not the theme.** The selector UI is rendered by Northbound's storefront JS; the theme just emits a `<div data-northbound-location-slot>` mount point and the runtime injects the dropdown there. Out of scope as a theme-side build beyond the mount point.
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Header has an `@app` block placement zone | not started | |
+| Header renders `<div data-northbound-location-slot>` | not started | One mount point in the header is enough — runtime populates every match if multiple are rendered. |
 | First-visit modal / overlay treatment | not started | If we want a forced selector on first visit, decide: theme-side or app-side? |
 
 ---

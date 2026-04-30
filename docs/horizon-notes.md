@@ -118,6 +118,32 @@ The auto-generated warning at the top of `templates/index.json` is a JS-style co
 
 Before declaring a CSS custom property, grep `assets/base.css`. It already includes `--padding-sm`, `--page-margin`, `--focus-outline-width`, `--focus-outline-offset`, `--card-corner-radius`, and the `.h6` typography class. Redefining these locally creates drift.
 
+### Where Arctic Fresh project-specific tokens live
+
+`snippets/theme-styles-variables.liquid` is the framework-designated home for `:root` custom properties — Horizon emits all schema-driven tokens (font families, spacing, colors) from a `{% style %}` block here. Project-specific **primitives** that the schema doesn't expose (brand palette, cross-cutting line-heights, container max-widths, hover lift) go at the bottom of the same `:root` block, clearly delimited with an `Arctic Fresh design tokens` banner.
+
+Why not `assets/base.css`? `base.css` is stock Horizon and should stay close to vanilla so future Horizon updates merge cleanly. Dwell (Shopify's reference Horizon theme) treats `base.css` the same way — its diff vs. vanilla is 7 lines, all bug fixes, never customization.
+
+The progression for adding new styles:
+1. **Schema-driven token** (font, color scheme, radius) → `config/settings_data.json`
+2. **Cross-cutting primitive used in 3+ places** → `snippets/theme-styles-variables.liquid` `:root` overlay
+3. **Component-scoped style** → `{% stylesheet %}` block on the section/block/snippet that owns it
+
+If a token starts in (2) and ends up only used by one component, graduate it down to (3).
+
+### Components consume primitives — they don't mint tokens
+
+When building a new component (NNC pill, BIA card, bottom nav, etc.), reach for existing primitives first. Brand palette (`--color-arctic-mint`, `--color-arctic-forest`, …), Horizon role tokens (`--color-foreground`, `--color-accent`, …), schema-driven tokens (`--badge-corner-radius`, `--card-corner-radius`, …), and our overlay primitives (line-height, container width) should cover ~90% of any component's needs.
+
+Anti-pattern: defining `--arctic-nnc-pill-bg`, `--arctic-nnc-pill-radius`, `--arctic-nnc-pill-padding` etc. as project-level tokens. Those are component values masquerading as system tokens. They duplicate primitives we already have, fragment the system, and tempt future components to do the same.
+
+The rule:
+- **Use a primitive** if one exists that fits.
+- **Use a raw value inside the component's `{% stylesheet %}` block** for one-off context-specific values (padding, letter-spacing on a uppercase label, micro-adjustments).
+- **Add a new primitive** only when the value is genuinely cross-cutting (used in 3+ unrelated places). When in doubt, don't.
+
+If a component needs a value that doesn't fit any primitive (e.g., 11px when the type scale starts at 12), that's a signal: either bend the component to fit the primitive, or you've found a real gap in the system. Don't paper over it with a component-specific token.
+
 ### Safari strips implicit list role from unstyled `<ul>`
 
 If you remove default list styling (`list-style: none`), Safari's screen reader stops announcing it as a list. Add `role="list"` explicitly on the `<ul>` to keep accessibility intact.
@@ -135,7 +161,7 @@ If you remove default list styling (`list-style: none`), Safari's screen reader 
 ## Open questions / things to verify
 
 - Horizon's `Component` framework (`assets/component.js`) — confirm the lifecycle order (constructor → connectedCallback → ref population) when nesting Web Components.
-- App blocks inside theme blocks — Horizon docs say `@app` is supported in block schemas; verify the app extension actually mounts correctly when nested several levels deep.
+- App blocks inside theme blocks — Horizon docs say `@app` is supported in block schemas. Worth keeping the slot for future apps, but **not load-bearing for Northbound** (Northbound is a body-level app embed + DOM attribute contract — see CLAUDE.md "Northbound Integration").
 - Performance impact of multiple `{% stylesheet %}` blocks per section — does Horizon dedupe, or does each section ship its own CSS?
 
 ---
@@ -152,4 +178,40 @@ When unsure how to do X in Horizon, read these before writing custom:
 - `assets/component.js` — Web Component base class (refs, event binding, lifecycle)
 - `blocks/group.liquid` — the foundational layout primitive
 
-The full inventory is in CLAUDE.md → "Built-in UI Infrastructure" and the `section-builder` skill.
+The full inventory lives in the `section-builder` skill (`.claude/skills/section-builder/SKILL.md`).
+
+---
+
+## Reference theme delta study (2026-04-30)
+
+Audit of how Horizon-based themes diverge from vanilla, comparing this project against `references/dwell/` and `references/dawn/`. Captured here so future sessions don't re-investigate "should we switch themes?" or "what's the right shape of brand customization?"
+
+### Headline finding: brand work is mostly tokens + thin CSS, not Liquid forks
+
+Comparing this repo to `references/dwell/` (another third-party Horizon-based theme):
+
+- **306 Liquid + JSON files in each** — identical inventory.
+- **Most "differ" files have 2–5 line diffs** — micro-divergences (one default setting value, one extra blank line, one theme-check comment). Same code, different Horizon version snapshots.
+- **Real Arctic Fresh additions are concentrated in three places:**
+  - `snippets/theme-styles-variables.liquid` — ~77 lines of design tokens added at the bottom (brand palette, role tokens, container width, spacing).
+  - `assets/base.css` — ~30 lines added for `resource-card` selector coverage, predictive search card hover fixes, header-context hover suppression.
+  - Custom net-new files: `snippets/header-menu-{mega,drawer,rail}.liquid`, `snippets/section-header.liquid`, `sections/department-shortcuts.liquid`, `sections/design-system.liquid`, `blocks/_media.liquid`.
+- **Dwell ships ~9 `*-styles.liquid` snippets we don't have** (e.g. `quick-add-styles.liquid`, `product-badges-styles.liquid`). These are feature areas we haven't built yet — and they confirm the extraction-into-styles-snippet pattern is how Horizon themes layer brand on top of stock markup.
+
+### What this means for our workflow
+
+- **For brand/visual changes:** reach for tokens and `*-styles.liquid` snippets first. Only fork Liquid markup when the markup itself needs to change (rare).
+- **For new sections:** the shortcut doctrine in `CLAUDE.md` applies (section blocks or hardcoded markup, plain `extends HTMLElement`, etc.). New sections aren't constrained by Horizon-fork concerns because they're net-new.
+- **For stock Horizon files:** when forking, extract the `{% stylesheet %}` block into a sibling `*-styles.liquid` snippet first, then fork the markup. Keeps forks small enough to diff cleanly against vanilla. (Rule: `.claude/rules/code-style.md`.)
+
+### Was Dawn a smoother base?
+
+Audited `references/dawn/` separately. Conclusion: no.
+
+- Dawn fixes 3 of our 10 pain points (block nesting, JS framework complexity, playground→production translation).
+- Dawn is *worse* on schema-driven complexity (`main-product` schema is 1,528 lines vs. Horizon's smaller per-block schemas).
+- Token/CSS fragmentation is unchanged — Dawn has the same per-component CSS variable sprawl (`--product-card-corner-radius`, `--collection-card-corner-radius`, `--blog-card-corner-radius`, etc.).
+- Dawn's JS uses plain `extends HTMLElement` — simpler than `Component`, but adds copy-paste boilerplate (manual `querySelector` + `addEventListener` + focus trap calls in every component).
+- Switching would burn the design-system + token work already completed.
+
+The pain we're feeling is Horizon conventions themselves, not our fork. The shortcut doctrine in `CLAUDE.md` addresses it without switching bases.
