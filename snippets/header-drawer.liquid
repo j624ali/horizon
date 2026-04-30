@@ -565,6 +565,15 @@
           {% endif %}
         </ul>
       </nav>
+
+      {%- comment -%}
+        Northbound community-selector slot inside the drawer (Phase 6). The app
+        auto-mounts a React root into [data-northbound-location-slot] divs and
+        renders the selected community as a pill. The announcement-bar slot is
+        hidden on mobile so this drawer instance is what mobile users see.
+      {%- endcomment -%}
+      <div class="drawer__community-pill" data-northbound-location-slot></div>
+
       <div
         class="menu-drawer__utility-links menu-drawer__animated-element"
         style="--menu-drawer-animation-index: {{ linklist.links.size }};"
@@ -1403,5 +1412,19 @@
 
   .drawer-localization .language-selector .svg-wrapper.icon-caret svg {
     transform: none;
+  }
+
+  /* Arctic Fresh — drawer Northbound community pill slot (Phase 6).
+     Sits between the main nav and the utility links. The Northbound app
+     mounts its own pill markup inside this div; we only handle layout. */
+  .drawer__community-pill {
+    padding: var(--padding-md) var(--drawer-padding) 0;
+    margin-block-end: var(--margin-md);
+  }
+
+  /* Arctic Fresh — accordion chevrons in mint to match brand accents. */
+  .menu-drawer__menu-item .icon-plus,
+  .menu-drawer__menu-item .icon-caret {
+    color: var(--color-arctic-mint);
   }
 {% endstylesheet %}

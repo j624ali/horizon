@@ -1,0 +1,44 @@
+{%- doc -%}
+  Renders the mobile slide-in drawer menu (variant of the header-menu block).
+  Schema lives in blocks/_header-menu.liquid (the dispatcher).
+
+  @param {object} block - The block context (provides block.settings, block.shopify_attributes).
+{%- enddoc -%}
+
+{% liquid
+  assign block_settings = block.settings
+%}
+
+<div
+  class="header__drawer"
+  ref="headerDrawerContainer"
+  data-hydration-key="header-drawer-mobile"
+  {{ block.shopify_attributes }}
+>
+  {% render 'header-drawer', linklist: block_settings.menu, data_header_drawer_type: 'mobile-drawer' %}
+</div>
+
+{% stylesheet %}
+  .header__drawer {
+    --header-drawer-min-height: 60px;
+    display: flex;
+    min-height: var(--header-drawer-min-height);
+    align-items: center;
+  }
+
+  #header-component[data-menu-style='drawer'] .header__drawer {
+    display: flex;
+    min-height: var(--header-drawer-min-height);
+  }
+
+  @media screen and (min-width: 750px) {
+    #header-component[data-menu-style='menu'] .header__drawer {
+      display: none;
+      min-height: 0;
+    }
+  }
+
+  .header--compact .header__drawer {
+    min-height: var(--minimum-touch-target);
+  }
+{% endstylesheet %}

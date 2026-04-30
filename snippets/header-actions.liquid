@@ -685,4 +685,16 @@
       margin-inline-start: 0;
     }
   }
+
+  /* Arctic Fresh — cart bubble in brand mint instead of the default
+     primary-button color. The donut mask in the cart icon (defined above)
+     keeps a transparent halo around the bubble so it doesn't blend into the
+     icon stroke. */
+  .header-actions__cart-icon .cart-bubble__background {
+    background-color: var(--color-arctic-mint, var(--color-primary-button-background));
+  }
+
+  .header-actions__cart-icon .cart-bubble__text {
+    color: var(--color-arctic-forest, var(--color-primary-button-text));
+  }
 {% endstylesheet %}

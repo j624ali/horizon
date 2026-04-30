@@ -75,4 +75,61 @@
       margin-inline: 0;
     }
   }
+
+  /* Arctic Fresh — desktop pill-input search trigger.
+     Header passes display_style:'text' so the trigger button always carries
+     .search-action--text. On desktop we restyle as a pill with magnifier icon
+     left + placeholder text. On mobile the markup falls back to icon-only via
+     the existing mobile:hidden / desktop:hidden classes — no override needed. */
+  @media screen and (min-width: 750px) {
+    .search-action--text > button {
+      display: inline-flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--gap-xs);
+      width: 100%;
+      min-width: 320px;
+      max-width: 480px;
+      height: 40px;
+      padding-inline: var(--padding-md);
+      border: 1px solid var(--color-arctic-mint, var(--color-border));
+      border-radius: 999px;
+      background: var(--color-background);
+      transition: border-color var(--animation-speed) var(--animation-easing);
+      cursor: text;
+    }
+
+    .search-action--text > button:hover {
+      border-color: var(--color-arctic-forest, var(--color-foreground));
+    }
+
+    .search-action--text > button:focus-visible {
+      outline: var(--focus-outline-width) solid var(--color-foreground);
+      outline-offset: var(--focus-outline-offset);
+    }
+
+    /* Override desktop:hidden on the icon span so it shows alongside the text */
+    .search-action--text > button > span.svg-wrapper {
+      /* stylelint-disable-next-line declaration-no-important */
+      display: inline-flex !important;
+      align-items: center;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      color: rgb(var(--color-foreground-rgb) / var(--opacity-60));
+    }
+
+    .search-action--text > button > span.svg-wrapper svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Style the visible "Search" label as a placeholder */
+    .search-action--text > button > span:not(.svg-wrapper) {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgb(var(--color-foreground-rgb) / var(--opacity-60));
+    }
+  }
 {% endstylesheet %}

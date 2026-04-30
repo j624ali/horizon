@@ -45,6 +45,7 @@ export class AnnouncementBar extends Component {
    */
   play(interval = this.autoplayInterval) {
     if (!this.autoplay) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     this.paused = false;
 

@@ -51,8 +51,8 @@
         "section_width": "page-width",
         "color_scheme": "scheme-3",
         "divider_width": 1,
-        "padding-block-start": 15,
-        "padding-block-end": 15
+        "padding-block-start": 10,
+        "padding-block-end": 10
       }
     },
     "header_section": {
@@ -114,7 +114,7 @@
         "divider_size": "page-width",
         "border_width": 0,
         "color_scheme_top": "scheme-1",
-        "color_scheme_bottom": "scheme-2",
+        "color_scheme_bottom": "scheme-1",
         "color_scheme_transparent": "scheme-6",
         "enable_transparent_header_home": false,
         "home_color_scheme": "inverse",

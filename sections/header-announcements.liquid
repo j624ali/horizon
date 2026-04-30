@@ -33,6 +33,14 @@
     <div class="announcement-bar__slides">
       {% content_for 'blocks' %}
     </div>
+
+    {%- comment -%}
+      Northbound community-selector slot. The Northbound app auto-mounts a React
+      root into any [data-northbound-location-slot] div and renders the selected
+      community as a pill. Positioned absolute right so the announcement carousel
+      stays centered. Hidden on mobile — the drawer hosts a separate slot.
+    {%- endcomment -%}
+    <div class="announcement-bar__community-pill" data-northbound-location-slot></div>
   </announcement-bar-component>
 </aside>
 
@@ -118,6 +126,18 @@
   .announcement-bar__link {
     position: absolute;
     inset: 0;
+  }
+
+  .announcement-bar__community-pill {
+    position: absolute;
+    inset-inline-end: var(--padding-md);
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+
+    @media screen and (max-width: 749px) {
+      display: none;
+    }
   }
 {% endstylesheet %}
 
